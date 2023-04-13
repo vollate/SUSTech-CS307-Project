@@ -9,7 +9,7 @@ create schema id_sequence;
 create table data.users
 (
     name              varchar primary key,
-    author_id         numeric,
+    user_id           numeric,
     registration_time timestamp,
     phone             char(15)
 );
@@ -19,7 +19,7 @@ create table data.posts
     post_id      numeric primary key,
     title        varchar not null,
     posting_time time,
-    author       varchar unique,
+    author_name  varchar unique,
     city         varchar,
     country      varchar,
     content      text
@@ -93,7 +93,7 @@ create rule user_insert as on insert to data.users
                  from data.users
                  where name = new.name)
     do instead update data.users
-               set author_id=new.author_id,
+               set user_id=new.user_id,
                    registration_time=new.registration_time,
                    phone=new.phone
                where name = new.name;
