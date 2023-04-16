@@ -1,0 +1,11 @@
+{
+  "Post Amount": 1e10,
+  "User Amount": 1e9,
+  "Reply Amount": 1e8,
+  "Category Amount": 20000,
+  "Category Each Post Maximum": 10,
+  "Like Each Post Maximum": 100,
+  "Share Each Post Maximum": 20,
+  "Favorite Each Post Maximum": 20,
+  "Follow Each Post Maximum": 20
+}
