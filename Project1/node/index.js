@@ -31,7 +31,7 @@ for (let file of dir_files) {
     }
 }
 
-Promise.allSettled(fileReadList)
+Promise.all(fileReadList)
     .then(() => {
         Promise.allSettled(insertionList).then
         (() => {
@@ -39,8 +39,8 @@ Promise.allSettled(fileReadList)
             process.exit();
         })
     })
-    .catch((e) => {
-        console.error(e);
-        dbInserter.closeConnection();
-    });
+.catch((e) => {
+    console.error(e);
+    dbInserter.closeConnection();
+});
 

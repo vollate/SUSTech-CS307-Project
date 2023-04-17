@@ -9,7 +9,7 @@ const insertion = {
     Category: 'insert into data.categories(category, post_id) values ($1,$2)',
     Follow: 'insert into relation.follow_relation(followee_name, follower_name)values($1,$2)',
     Favorite: 'insert into relation.favorite_relation(post_id, user_name)values($1,$2)',
-    Like: 'insert into relation.like_relation(post_id, user_name)valueqs($1,$2)',
+    Like: 'insert into relation.like_relation(post_id, user_name)values($1,$2)',
     Share: 'insert into relation.share_relation(post_id, user_name)values($1,$2)',
     parse: function (type, json) {
         switch (type) {
@@ -33,7 +33,7 @@ const insertion = {
                     for (let each of obj['Category']) {
                         allPromise.push(client.query(this.Category, [each, obj['Post ID']]));
                     }
-                    Promise.all(allPromise)
+                    Promise.allSettled(allPromise)
                         .then(() => resolve('succeed'))
                         .catch((e) => console.error(e))
                 });
@@ -43,7 +43,7 @@ const insertion = {
                     for (let each of obj['Authors Followed By']) {
                         allPromise.push(client.query(this.Follow, [obj['Author'], each]));
                     }
-                    Promise.all(allPromise)
+                    Promise.allSettled(allPromise)
                         .then(() => resolve('succeed'))
                         .catch((e) => console.error(e))
                 });
@@ -53,7 +53,7 @@ const insertion = {
                     for (let each of obj['Authors Who Favorited the Post']) {
                         allPromise.push(client.query(this.Favorite, [obj['Post ID'], each]));
                     }
-                    Promise.all(allPromise)
+                    Promise.allSettled(allPromise)
                         .then(() => resolve('succeed'))
                         .catch((e) => console.error(e))
                 });
@@ -63,7 +63,7 @@ const insertion = {
                     for (let each of obj['Authors Who Liked the Post']) {
                         allPromise.push(client.query(this.Favorite, [obj['Post ID'], each]));
                     }
-                    Promise.all(allPromise)
+                    Promise.allSettled(allPromise)
                         .then(() => resolve('succeed'))
                         .catch((e) => console.error(e))
                 });
@@ -73,7 +73,7 @@ const insertion = {
                     for (let each of obj['Authors Who Shared the Post']) {
                         allPromise.push(client.query(this.Favorite, [obj['Post ID'], each]));
                     }
-                    Promise.all(allPromise)
+                    Promise.allSettled(allPromise)
                         .then(() => resolve('succeed'))
                         .catch((e) => console.error(e))
                 });
@@ -88,8 +88,10 @@ let client;
 async function insertPost(obj) {
     let promiseList = [];
     for (let post of obj) {
-        await client.query(insertion.User, insertion.parse('User', post));
-        await client.query(insertion.Post, insertion.parse('Post', post));
+        // await client.query(insertion.User, insertion.parse('User', post));
+        // await client.query(insertion.Post, insertion.parse('Post', post));
+        promiseList.push(client.query(insertion.User, insertion.parse('User', post)));
+        promiseList.push(client.query(insertion.Post, insertion.parse('Post', post)));
         promiseList.push(insertion.insertArray('Category', post));
         promiseList.push(insertion.insertArray('Follow', post));
         promiseList.push(insertion.insertArray('Favorite', post));
@@ -98,7 +100,10 @@ async function insertPost(obj) {
     }
     return new Promise((resolve, reject) => {
         Promise.all(promiseList)
-            .then(() => resolve('succeed'))
+            .then(() => {
+                console.log('finish post insert');
+                resolve();
+            })
             .catch((e) => console.error(e))
     })
 }
@@ -106,12 +111,16 @@ async function insertPost(obj) {
 async function insertReply(obj) {
     let promiseList = [];
     for (let reply of obj) {
+        // await client.query(insertion.Reply, insertion.parse('Reply', reply));
         promiseList.push(client.query(insertion.Reply, insertion.parse('Reply', reply)));
         promiseList.push(client.query(insertion.SecondaryReply, insertion.parse('SecondaryReply', reply)));
     }
     return new Promise((resolve, reject) => {
         Promise.all(promiseList)
-            .then(() => resolve('succeed'))
+            .then(() => {
+                console.log('finish reply insert');
+                resolve();
+            })
             .catch((e) => console.error(e))
     })
 }
