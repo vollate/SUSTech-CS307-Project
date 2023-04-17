@@ -1,5 +1,5 @@
 -- this is a sample to insert to table in schema data by sql
-insert into data.users(name, user_id, registration_time, phone)
+insert ignore into data.users(name, user_id, registration_time, phone)
 values ('田所浩二', 114514, '1919-8-10 00:00:01', 10086);
 
 insert into data.posts(post_id, title, posting_time, author_name, city, country, content)

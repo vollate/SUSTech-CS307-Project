@@ -1,10 +1,18 @@
+import com.alibaba.fastjson.annotation.JSONField;
 public class Replies {
+    @JSONField(name = "Post ID")
     private int postID;
+    @JSONField(name = "Reply Content")
     private String replyContent;
+    @JSONField(name = "Reply Stars")
     private int replyStars;
+    @JSONField(name = "Reply Author")
     private String replyAuthor;
+    @JSONField(name = "Secondary Reply Content")
     private String secondaryReplyContent;
+    @JSONField(name = "Secondary Reply Stars")
     private int secondaryReplyStars;
+    @JSONField(name = "Secondary Reply Author")
     private String secondaryReplyAuthor;
 
     public Replies() {

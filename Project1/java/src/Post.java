@@ -1,19 +1,29 @@
 import java.util.List;
-
+import com.alibaba.fastjson.annotation.JSONField;
 public class Post {
+    @JSONField(name = "Post ID")
     private int postID;
     private String title;
     private List<String> category;
     private String content;
+    @JSONField(name = "Posting Time")
     private String postingTime;
+    @JSONField(name = "Posting City")
     private String postingCity;
     private String Author;
+    @JSONField(name = "Author Registration Time")
     private String authorRegistrationTime;
+    @JSONField(name = "Author's ID")
     private String authorID;
+    @JSONField(name = "Author's Phone")
     private String authoPhone;
+    @JSONField(name = "Authors Followed By")
     private List<String> authorFollowedBy;
+    @JSONField(name = "Authors Who Favorited the Post")
     private List<String> authorFavorite;
+    @JSONField(name = "Authors Who Shared the Post")
     private List<String> authorShared;
+    @JSONField(name = "Authors Who Liked the Post")
     private List<String> authorLiked;
 
     @Override
