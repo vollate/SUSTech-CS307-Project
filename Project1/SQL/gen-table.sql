@@ -9,7 +9,7 @@ create schema id_sequence;
 create table data.users
 (
     name              varchar primary key,
-    user_id           numeric,
+    user_id           char(18),
     registration_time timestamp,
     phone             char(15)
 );
@@ -32,7 +32,7 @@ create table data.replies
     stars       bigint check ( stars >= 0 ),
     content     text                                    not null check ( content != '' ),
     author_name varchar                                 not null,
-    unique (content, author_name)
+    unique (post_id, content, author_name)
 );
 
 create table data.secondary_replies
@@ -42,7 +42,7 @@ create table data.secondary_replies
     stars              bigint check ( stars >= 0 ),
     content            text                                       not null check (content != ''),
     author_name        varchar                                    not null,
-    unique (content, author_name)
+    unique (reply_id, content, author_name)
 );
 
 create table data.categories
@@ -90,7 +90,7 @@ create sequence id_sequence.secondary_reply_seq;
 
 -- rules
 
-create rule user_insert as on insert to data.users
+create rule user_exist_insert as on insert to data.users
     where exists(select 1
                  from data.users
                  where name = new.name)
@@ -100,6 +100,11 @@ create rule user_insert as on insert to data.users
                    phone=new.phone
                where name = new.name;
 
+create rule reply_exist_insert as on insert to data.replies
+    where exists(select 1
+                 from data.replies
+                 where content = new.content
+                   and author_name = new.author_name) do instead nothing;
 
 create rule follow_insert as on insert to relation.follow_relation
     where not exists(select 1
