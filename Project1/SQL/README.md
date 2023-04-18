@@ -7,6 +7,7 @@
 ├── drop-all.sql
 ├── gen-table.sql
 ├── README.md
+├── re-gen.sql
 └── sample.sql
 ```
 
@@ -14,4 +15,5 @@
 
 - Run `gen-table.sql` to create all tables/schemas
 - Run `drop-all.sql` to drop all tables/schemas
+- Run `re-gen.sql` to clear all data to re-insert
 

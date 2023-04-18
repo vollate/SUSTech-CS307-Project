@@ -8,6 +8,7 @@ const JSON_DIR = 'data/';
 let fileReadList = [];
 let insertionList = [];
 
+console.time('total execution time');
 const clientInfo = JSON.parse(fs.readFileSync('user-info.json'));
 const dir_files = fs.readdirSync(JSON_DIR, {withFileTypes: true});
 dbInserter.init(clientInfo);
@@ -36,11 +37,12 @@ Promise.all(fileReadList)
         Promise.allSettled(insertionList).then
         (() => {
             dbInserter.closeConnection();
+            console.timeEnd('total execution time');
             process.exit();
         })
     })
-.catch((e) => {
-    console.error(e);
-    dbInserter.closeConnection();
-});
+    .catch((e) => {
+        console.error(e);
+        dbInserter.closeConnection();
+    });
 

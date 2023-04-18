@@ -16,7 +16,9 @@ const insertion = {
             case 'User':
                 return [json['Author'], json['Author\'s ID'], json['Author Registration Time'], json['Author\'s Phone']];
             case 'Post':
-                return [json['Post ID'], json['Title'], json['Posting Time'], json['Author'], json['Posting City'], json[''], json['Content']];
+                let location = json['Posting City'];
+                let index = location.lastIndexOf(',');
+                return [json['Post ID'], json['Title'], json['Posting Time'], json['Author'], location.substring(0, index), location.substring(index + 1), json['Content']];
             case 'Reply':
                 return [json['Post ID'], json['Reply Stars'], json['Reply Content'], json['Reply Author']];
             case 'SecondaryReply':
@@ -88,8 +90,6 @@ let client;
 async function insertPost(obj) {
     let promiseList = [];
     for (let post of obj) {
-        // await client.query(insertion.User, insertion.parse('User', post));
-        // await client.query(insertion.Post, insertion.parse('Post', post));
         promiseList.push(client.query(insertion.User, insertion.parse('User', post)));
         promiseList.push(client.query(insertion.Post, insertion.parse('Post', post)));
         promiseList.push(insertion.insertArray('Category', post));
@@ -111,9 +111,8 @@ async function insertPost(obj) {
 async function insertReply(obj) {
     let promiseList = [];
     for (let reply of obj) {
-        // await client.query(insertion.Reply, insertion.parse('Reply', reply));
-        promiseList.push(client.query(insertion.Reply, insertion.parse('Reply', reply)));
-        promiseList.push(client.query(insertion.SecondaryReply, insertion.parse('SecondaryReply', reply)));
+        promiseList.push(client.query(insertion.Reply, insertion.parse('Reply', reply, client)));
+        promiseList.push(client.query(insertion.SecondaryReply, insertion.parse('SecondaryReply', reply, client)));
     }
     return new Promise((resolve, reject) => {
         Promise.all(promiseList)
@@ -126,8 +125,8 @@ async function insertReply(obj) {
 }
 
 module.exports = {
-    init: function (clientInfo) {
-        client = new Client(clientInfo);
+    init: function (info) {
+        client = new Client(info);
     },
     openConnection: function () {
         client.connect()
