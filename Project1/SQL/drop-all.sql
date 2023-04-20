@@ -1,3 +1,3 @@
-drop schema data cascade;
-drop schema relation cascade;
-drop schema id_sequence cascade;
+drop schema if exists data cascade;
+drop schema if exists relation cascade;
+drop schema if exists id_sequence cascade;

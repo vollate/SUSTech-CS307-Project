@@ -1,3 +1,7 @@
+drop schema if exists data cascade;
+drop schema if exists relation cascade;
+drop schema if exists id_sequence cascade;
+
 -- schema
 
 create schema if not exists data;
@@ -56,8 +60,8 @@ create table if not exists data.categories
 
 create table if not exists relation.follow_relation
 (
-    followee_name varchar references data.users (name) not null,
-    follower_name varchar                              not null,
+    followee_name varchar                              not null,
+    follower_name varchar references data.users (name) not null,
     primary key (followee_name, follower_name),
     check ( followee_name != follower_name )
 );
@@ -113,7 +117,7 @@ $$
     begin
         if not exists (select *
                        from pg_roles
-                       where rolname = 'user_exist_insert') then
+                       where rolname = 'reply_exist_insert') then
             create rule reply_exist_insert as on insert to data.replies
                 where exists(select 1
                              from data.replies
@@ -128,7 +132,7 @@ $$
     begin
         if not exists (select *
                        from pg_roles
-                       where rolname = 'user_exist_insert') then
+                       where rolname = 'follow_insert') then
             create rule follow_insert as on insert to relation.follow_relation
                 where not exists(select 1
                                  from data.users
@@ -144,7 +148,7 @@ $$
     begin
         if not exists (select *
                        from pg_roles
-                       where rolname = 'user_exist_insert') then
+                       where rolname = 'favorite_insert') then
             create rule favorite_insert as on insert to relation.favorite_relation
                 where not exists(select 1
                                  from data.users
@@ -160,7 +164,7 @@ $$
     begin
         if not exists (select *
                        from pg_roles
-                       where rolname = 'user_exist_insert') then
+                       where rolname = 'share_insert') then
             create rule share_insert as on insert to relation.share_relation
                 where not exists(select 1
                                  from data.users
@@ -176,7 +180,7 @@ $$
     begin
         if not exists (select *
                        from pg_roles
-                       where rolname = 'user_exist_insert') then
+                       where rolname = 'like_insert') then
             create rule like_insert as on insert to relation.like_relation
                 where not exists(select 1
                                  from data.users
@@ -192,7 +196,7 @@ $$
     begin
         if not exists (select *
                        from pg_roles
-                       where rolname = 'user_exist_insert') then
+                       where rolname = 'reply_insert') then
             create rule reply_insert as on insert to data.replies
                 where not exists(select 1
                                  from data.users
@@ -208,7 +212,7 @@ $$
     begin
         if not exists (select *
                        from pg_roles
-                       where rolname = 'user_exist_insert') then
+                       where rolname = 'secondary_reply_insert') then
             create rule secondary_reply_insert as on insert to data.secondary_replies
                 where not exists(select 1
                                  from data.users

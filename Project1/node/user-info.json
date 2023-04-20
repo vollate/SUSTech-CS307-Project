@@ -3,5 +3,6 @@
   "password": "114514",
   "host": "127.0.0.1",
   "port": 21846,
-  "database": "Project1"
+  "database": "Project1",
+  "max": 30
 }
