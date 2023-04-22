@@ -22,5 +22,3 @@ dbInserter.insert('posts', JSON.parse(postContent)).then(() => {
         process.exit();
     })
 })
-
-

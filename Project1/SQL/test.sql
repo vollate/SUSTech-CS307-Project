@@ -1,0 +1,17 @@
+select count(*)from data.posts;
+select count(*)from data.users;
+select count(*)from data.replies;
+select count(*)from data.secondary_replies;
+select count(*) from relation.favorite_relation where post_id=163;
+select count(*) from relation.favorite_relation where post_id=28;
+select count(*) from relation.favorite_relation where post_id=6;
+select count(*) from relation.share_relation where post_id=163;
+select count(*) from relation.share_relation where post_id=28;
+select count(*) from relation.share_relation where post_id=6;
+select * from data.users where name='negative_mountain';
+select * from data.users where name='helpful_understanding';
+select * from data.users where name='overall_environment';
+select post_id,cnt from(select post_id,tmp.cnt,dense_rank()over(order by cnt desc ) from(select post_id, count(*)cnt from relation.like_relation group by post_id) tmp)tmp1 where tmp1.dense_rank=1;
+select follower_name from(select follower_name,dense_rank()over(order by cnt desc) from(select follower_name,count(*)cnt from relation.follow_relation  group by follower_name)tmp1)tmp2 where dense_rank=1;
+select followee_name from(select followee_name,dense_rank()over(order by cnt desc) from(select followee_name,count(*)cnt from relation.follow_relation  group by followee_name)tmp1)tmp2 where dense_rank=1;
+select post_id from data.posts order by posting_time;

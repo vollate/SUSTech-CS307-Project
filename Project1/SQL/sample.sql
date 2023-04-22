@@ -3,7 +3,7 @@ insert into data.users(name, user_id, registration_time, phone)
 values ('田所浩二', 114514, '1919-8-10 00:00:01', 10086);
 
 insert into data.posts(post_id, title, posting_time, author_name, city, country, content)
-values (1, '下北泽轶事', '2023-04-13 11:18:12', '昏睡红茶', '下北泽', '霓虹', '仲夏夜之淫梦');
+values (1, '下北泽轶事', '2023-04-13 11:18:12', '田所浩二', '下北泽', '霓虹', '仲夏夜之淫梦');
 
 insert into data.replies(reply_id, post_id, stars, content, author_name)
 values (nextval('id_sequence.reply_seq')::numeric, 1, 10000, '哼~哼~哼~~啊啊啊啊啊啊啊啊啊啊啊啊', '田所浩二');

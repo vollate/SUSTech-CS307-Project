@@ -22,7 +22,7 @@ create table if not exists data.posts
 (
     post_id      numeric primary key,
     title        varchar                              not null,
-    posting_time time,
+    posting_time timestamp,
     author_name  varchar references data.users (name) not null,
     city         varchar,
     country      varchar,
