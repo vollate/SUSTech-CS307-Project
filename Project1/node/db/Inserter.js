@@ -1,6 +1,9 @@
 "use strict";
 
 const {Client} = require('pg');
+const {Pool} = require('pg');
+const maxPromise = Math.pow(2, 19);
+
 const insertion = {
     User: 'insert into data.users(name,user_id, registration_time, phone) values ($1,$2,$3,$4)',
     Post: 'insert into data.posts(post_id, title, posting_time, author_name, city, country, content) values ($1,$2,$3,$4,$5,$6,$7)',
@@ -16,7 +19,9 @@ const insertion = {
             case 'User':
                 return [json['Author'], json['Author\'s ID'], json['Author Registration Time'], json['Author\'s Phone']];
             case 'Post':
-                return [json['Post ID'], json['Title'], json['Posting Time'], json['Author'], json['Posting City'], json[''], json['Content']];
+                let location = json['Posting City'];
+                let index = location.lastIndexOf(',');
+                return [json['Post ID'], json['Title'], json['Posting Time'], json['Author'], location.substring(0, index), location.substring(index + 1), json['Content']];
             case 'Reply':
                 return [json['Post ID'], json['Reply Stars'], json['Reply Content'], json['Reply Author']];
             case 'SecondaryReply':
@@ -31,51 +36,81 @@ const insertion = {
                 return new Promise((resolve, reject) => {
                     let allPromise = [];
                     for (let each of obj['Category']) {
-                        allPromise.push(client.query(this.Category, [each, obj['Post ID']]));
+                        allPromise.push(db.query(this.Category, [each, obj['Post ID']]));
                     }
                     Promise.allSettled(allPromise)
-                        .then(() => resolve('succeed'))
-                        .catch((e) => console.error(e))
+                        .then((results) => {
+                            results.forEach((promise) => {
+                                if (promise.status === 'rejected') {
+                                    console.error(promise);
+                                }
+                            })
+                            resolve();
+                        })
                 });
             case 'Follow':
                 return new Promise((resolve, reject) => {
                     let allPromise = [];
                     for (let each of obj['Authors Followed By']) {
-                        allPromise.push(client.query(this.Follow, [obj['Author'], each]));
+                        allPromise.push(db.query(this.Follow, [each, obj['Author']]));
                     }
                     Promise.allSettled(allPromise)
-                        .then(() => resolve('succeed'))
-                        .catch((e) => console.error(e))
+                        .then((results) => {
+                            results.forEach((promise) => {
+                                if (promise.status === 'rejected') {
+                                    console.error(promise);
+                                }
+                            })
+                            resolve();
+                        })
                 });
             case 'Favorite':
                 return new Promise((resolve, reject) => {
                     let allPromise = [];
                     for (let each of obj['Authors Who Favorited the Post']) {
-                        allPromise.push(client.query(this.Favorite, [obj['Post ID'], each]));
+                        allPromise.push(db.query(this.Favorite, [obj['Post ID'], each]));
                     }
                     Promise.allSettled(allPromise)
-                        .then(() => resolve('succeed'))
-                        .catch((e) => console.error(e))
+                        .then((results) => {
+                            results.forEach((promise) => {
+                                if (promise.status === 'rejected') {
+                                    console.error(promise);
+                                }
+                            })
+                            resolve();
+                        })
                 });
             case 'Like':
                 return new Promise((resolve, reject) => {
                     let allPromise = [];
                     for (let each of obj['Authors Who Liked the Post']) {
-                        allPromise.push(client.query(this.Favorite, [obj['Post ID'], each]));
+                        allPromise.push(db.query(this.Like, [obj['Post ID'], each]));
                     }
                     Promise.allSettled(allPromise)
-                        .then(() => resolve('succeed'))
-                        .catch((e) => console.error(e))
+                        .then((results) => {
+                            results.forEach((promise) => {
+                                if (promise.status === 'rejected') {
+                                    console.error(promise);
+                                }
+                            })
+                            resolve();
+                        })
                 });
             case 'Share':
                 return new Promise((resolve, reject) => {
                     let allPromise = [];
                     for (let each of obj['Authors Who Shared the Post']) {
-                        allPromise.push(client.query(this.Favorite, [obj['Post ID'], each]));
+                        allPromise.push(db.query(this.Share, [obj['Post ID'], each]));
                     }
                     Promise.allSettled(allPromise)
-                        .then(() => resolve('succeed'))
-                        .catch((e) => console.error(e))
+                        .then((results) => {
+                            results.forEach((promise) => {
+                                if (promise.status === 'rejected') {
+                                    console.error(promise);
+                                }
+                            })
+                            resolve();
+                        })
                 });
             default:
                 throw ('wrong type');
@@ -83,15 +118,33 @@ const insertion = {
     }
 }
 
-let client;
+let db;
 
 async function insertPost(obj) {
     let promiseList = [];
     for (let post of obj) {
-        // await client.query(insertion.User, insertion.parse('User', post));
-        // await client.query(insertion.Post, insertion.parse('Post', post));
-        promiseList.push(client.query(insertion.User, insertion.parse('User', post)));
-        promiseList.push(client.query(insertion.Post, insertion.parse('Post', post)));
+        promiseList.push(db.query(insertion.User, insertion.parse('User', post)));
+    }
+    Promise.allSettled(promiseList).then((results) => {
+        results.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                console.error(promise);
+            }
+        })
+        promiseList.length = 0;
+    })
+    for (let post of obj) {
+        promiseList.push(db.query(insertion.Post, insertion.parse('Post', post)));
+    }
+    Promise.allSettled(promiseList).then((results) => {
+        results.forEach((promise) => {
+            if (promise.status === 'rejected') {
+                console.error(promise);
+            }
+        })
+        promiseList.length = 0;
+    })
+    for (let post of obj) {
         promiseList.push(insertion.insertArray('Category', post));
         promiseList.push(insertion.insertArray('Follow', post));
         promiseList.push(insertion.insertArray('Favorite', post));
@@ -99,42 +152,84 @@ async function insertPost(obj) {
         promiseList.push(insertion.insertArray('Share', post));
     }
     return new Promise((resolve, reject) => {
-        Promise.all(promiseList)
-            .then(() => {
+        Promise.allSettled(promiseList)
+            .then((results) => {
+                results.forEach((promise) => {
+                    if (promise.status === 'rejected') {
+                        console.error(promise);
+                    }
+                })
                 console.log('finish post insert');
                 resolve();
             })
-            .catch((e) => console.error(e))
     })
 }
 
 async function insertReply(obj) {
     let promiseList = [];
+    let count = 0, te = 0;
     for (let reply of obj) {
-        // await client.query(insertion.Reply, insertion.parse('Reply', reply));
-        promiseList.push(client.query(insertion.Reply, insertion.parse('Reply', reply)));
-        promiseList.push(client.query(insertion.SecondaryReply, insertion.parse('SecondaryReply', reply)));
+        if (++count > maxPromise) {
+            await Promise.allSettled(promiseList);
+            promiseList.forEach((promise) => {
+                if (promise.status === 'rejected') {
+                    console.error(promise);
+                }
+            })
+            promiseList.length = 0;
+            count = 0;
+        }
+        promiseList.push(db.query(insertion.Reply, insertion.parse('Reply', reply, db)));
     }
+    await Promise.allSettled(promiseList);
+    promiseList.forEach((promise) => {
+        if (promise.status === 'rejected') {
+            console.error(promise);
+        }
+    })
+    promiseList.length = 0;
+    count = 0;
+    for (let reply of obj) {
+        if (++count > maxPromise) {
+            await Promise.allSettled(promiseList);
+            promiseList.forEach((promise) => {
+                if (promise.status === 'rejected') {
+                    console.error(promise);
+                }
+            })
+            promiseList.length = 0;
+            count = 0;
+        }
+        promiseList.push(db.query(insertion.SecondaryReply, insertion.parse('SecondaryReply', reply, db)));
+    }
+
     return new Promise((resolve, reject) => {
-        Promise.all(promiseList)
-            .then(() => {
+        Promise.allSettled(promiseList)
+            .then((results) => {
+                results.forEach((promise) => {
+                    if (promise.status === 'rejected') {
+                        console.error(promise);
+                    }
+                })
                 console.log('finish reply insert');
                 resolve();
             })
-            .catch((e) => console.error(e))
     })
 }
 
 module.exports = {
-    init: function (clientInfo) {
-        client = new Client(clientInfo);
+    initClient: function (info) {
+        db = new Client(info);
+    },
+    initPool: function (info) {
+        db = new Pool(info);
     },
     openConnection: function () {
-        client.connect()
+        db.connect()
             .catch(() => console.error('failed to connect'));
     },
     closeConnection: function () {
-        client.end();
+        db.end();
     },
     insert: async function (name, jsonData) {
         switch (name) {
