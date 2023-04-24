@@ -111,8 +111,10 @@
   - 在插入second reply时，由于不能实时获取当前reply的自增id，可以通过维护一个reply的HashSet来获取reply_id。
   - 使用batch插入Replies类时，直接用类里面定义的toSqlString来获取插入语句。
 - 不同batch size下的加速效果。
-  - 笔记本离电状态下：![off-battery-testbench](img/DBtestResult1.png)
-  - 插电时：![plug-in-testbench](img/DBtestResult2.png)
+  - 笔记本离电状态下：    
+  ![off-battery-testbench](img/DBtestResult1.png)
+  - 插电时：     
+  ![plug-in-testbench](img/DBtestResult2.png)
 - *分析*：开启批处理后，相较于逐条插入有明显提升，同时随着batch size增加，时间开销逐渐减小，然而加速呈放缓趋势。批处理之所以比逐个插入快，是因为它同时提交多个操作，减少了与数据库服务器之间的通信次数。而在更高的batch size中速度提升不明显，推测原因是数据库自身解析运行sql语句的时间成为了瓶颈。
    
 #### node.js
