@@ -1,5 +1,6 @@
 import com.alibaba.fastjson.annotation.JSONField;
 public class Replies {
+    private int reply_id;
     @JSONField(name = "Post ID")
     private int postID;
     @JSONField(name = "Reply Content")
@@ -27,7 +28,9 @@ public class Replies {
         this.secondaryReplyStars = secondaryReplyStars;
         this.secondaryReplyAuthor = secondaryReplyAuthor;
     }
-
+    public void setReply_id(int id){
+        reply_id = id;
+    }
     public int getPostID() {
         return postID;
     }
@@ -95,5 +98,25 @@ public class Replies {
                 ", secondaryReplyStars=" + secondaryReplyStars +
                 ", secondaryReplyAuthor='" + secondaryReplyAuthor + '\'' +
                 '}';
+    }
+    public String toInsertReplySql(){
+        String reCon = replyContent.replace("'", "''");
+        return "insert into data.replies(reply_id, post_id, stars, content, author_name)\n" +
+                "values (nextval('id_sequence.reply_seq')::numeric, "
+                + postID+ ", "
+                + replyStars+ ", '"
+                + reCon+"', '"
+                + replyAuthor+"')";
+
+    }
+    public String toInsertSecReplySql(){
+        String secReCon = secondaryReplyContent.replace("'", "''");
+        return "insert into data.secondary_replies(secondary_reply_id, reply_id, stars, content, author_name)\n" +
+                "values (nextval('id_sequence.secondary_reply_seq')::numeric, "
+                + reply_id + ", "
+                + secondaryReplyStars + ", '"
+                + secReCon + "', '"
+                + secondaryReplyAuthor + "');";
+
     }
 }
