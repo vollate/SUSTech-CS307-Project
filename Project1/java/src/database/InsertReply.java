@@ -1,3 +1,5 @@
+package database;
+
 import classes.Replies;
 
 import java.sql.PreparedStatement;

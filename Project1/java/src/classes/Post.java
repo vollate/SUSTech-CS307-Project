@@ -1,5 +1,9 @@
-import java.util.List;
+package classes;
+
 import com.alibaba.fastjson.annotation.JSONField;
+
+import java.util.List;
+
 public class Post {
     @JSONField(name = "Post ID")
     private int postID;

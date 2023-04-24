@@ -1,4 +1,7 @@
+package classes;
+
 import com.alibaba.fastjson.annotation.JSONField;
+
 public class Replies {
     private int reply_id;
     @JSONField(name = "Post ID")

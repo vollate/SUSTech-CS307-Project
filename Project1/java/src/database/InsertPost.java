@@ -1,3 +1,5 @@
+package database;
+
 import classes.Post;
 
 import java.sql.PreparedStatement;
