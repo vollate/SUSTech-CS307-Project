@@ -68,12 +68,16 @@
   - DB.java  --数据库的连接，建表，清除表，关闭数据库
   - InsertPost.java  --插入Post
   - InsertReply.java --插入Replies
-- Main.java --导入数据
-- TestBench.java --导入速度测试
+- Main.java  --导入数据（可以选择是否开启批处理）
+- TestBench.java --导入时间测试
   
 2. 数据导入
-
-- 通过Properties文件导入用户信息并连接数据库。
+- 使用fastjson将json文件转换为对应的java对象Post/Replies。
+- 通过`dbUser.properties`文件传入用户信息并连接数据库。
+  ```
+  Properties prop = DB.loadDBUser();
+  DB.openDB(prop);
+  ```
 - 通过sql文件`gen-table.sql`， `drop-all.sql`来直接执行建表和清空数据库。
 
    ```
@@ -87,8 +91,30 @@
     }
     ```
 
-- 使用全局变量`PreparedStatement stmt`和`Connection con`来进行insert语句的提交。使用统一的`setPreparedStatement(String command)` 来分派插入语句。
-
+- 使用全局变量`PreparedStatement stmt`和`Connection con`来进行insert语句的提交。使用统一的`setPreparedStatement(String command)` 来分派插入语句。   
+  
+    ```
+    public static void setPreparedStatement(String command){
+        String insertUser = "insert into data.users(name, user_id, registration_time, phone) " +
+                "values (?, ?, ?, ?);";
+        String insertPost = "insert into data.posts(post_id, title, posting_time, author_name, city, country, content)\n" +
+                "values (?, ?, ?, ?, ?, ?, ?);";
+        //...
+        if(DB.con != null) {
+            try {
+                switch (command) {
+                    case "insertUser": stmt = DB.con.prepareStatement(insertUser); break;
+                    case "insertPost": stmt = DB.con.prepareStatement(insertPost); break;
+                    //...
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+    ```   
+- 在方法`loadInsertXXX(Post)`中, 设置prepared statement的具体内容，完成对不同table的插入。
+- 最后封装为一个方法，一次性实现所有Post插入。
     ```
     public static void loadPosts(List<Post> posts) throws SQLException {
         for(Post post: posts){
@@ -98,11 +124,11 @@
             loadInsertPost(post);
             setPreparedStatement("insertFollow");
             loadInsertFollow(post);
-            ...
+            //...
         }
     }
     ```
-
+- Replies的插入大体相同，不过由于Reply相关只有3个表，设置prepared statement的过程就展开到`static void loadReplies(List<Replies> replies)`里了。
 - 在插入Second Reply时，需要从数据库中获取自增reply_id，可以用到sql语句`SELECT last_value FROM id_sequence.reply_seq;`
 
 #### node.js
@@ -120,14 +146,17 @@
 #### java
 
 - 使用jdbc批处理来加速导入数据。
+  - 批处理的开启由全局变量`batchFlag`管理。
+  - `batchFlag`为`true`时, 连接数据库时会关闭自动提交, 并在完成全部插入batch清空时统一提交。
   - 由于在同一batch中只能用一种PreparedStatement，所以在插入Post类时插入顺序被改为将user/post/follow/... 依次全部插入。
   - 在插入second reply时，由于不能实时获取当前reply的自增id，可以通过维护一个reply的HashSet来获取reply_id。
-  - 使用batch插入Replies类时，直接用类里面定义的toSqlString来获取插入语句。
+  - 使用batch插入Replies类时，直接用类里面定义的toSqlString来生成sql插入语句, 这避免了PreparedStatement没法在批处理过程中切换的问题。
 - 不同batch size下的加速效果（设备:AMD Ryzen 7 5800H 16G RAM）
-  - 笔记本离电状态下：
-  ![off-battery-testbench](img/DBtestResult1.png)
+  - 笔记本离电状态下： 
+  
+    ![off-battery-testbench](img/DBtestResult1.png)
   - 插电时：  
-  ![plug-in-testbench](img/DBtestResult2.png)
+    ![plug-in-testbench](img/DBtestResult2.png)
 - *分析*：开启批处理后，相较于逐条插入有明显提升，同时随着batch size增加，时间开销逐渐减小，然而加速呈放缓趋势。批处理之所以比逐个插入快，是因为它同时提交多个操作，减少了与数据库服务器之间的通信次数。而在更高的batch size中速度提升不明显，推测原因是数据库自身解析运行sql语句的时间成为了瓶颈。
 
 #### node.js
