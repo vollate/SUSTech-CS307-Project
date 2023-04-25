@@ -1,6 +1,6 @@
 # Project 1
->
->贾禹帆，栾钦策
+
+>贾禹帆 栾钦策  
 
 ## ER Diagram
 
@@ -51,7 +51,7 @@
   - post_id like的post_id
   - user_name 用户名
 
->SQL文件见 `SQL/gen-table.sql`
+>**SQL文件见 `SQL/gen-table.sql`**
   
 ## Data Import
 
@@ -107,8 +107,13 @@
 
 #### node.js
 
+- 程序流程:
+
 1. 读取 `posts.json` & `replies.json` & `user-info.json` 并解析
 2. 打开连接并使用 query 接口插入数据，先插入 post，等待所有 promise 返回后再插入 reply。全部返回后，关闭连接，退出程序。
+
+- 如何运行:
+在 node 目录下执行`npm install`，完成后修改 "user-info.json" 中的数据库信息。然后执行 `node index.js` 进行插入
 
 ### Advanced
 
@@ -129,10 +134,10 @@
 
 Optomize:
 
-1. 使用 pool 代替 client 进行多客户端流水线插入。由于数据库操作的原子性，一个操作再完成前不可见。由于node的异步io导致两处地方同时（极短时间内）创建不存在的同一个user触发constrain产生插入异常，属于正常现象，捕获即可。
+1. 使用 pool 代替 client 进行多客户端流水线插入。由于数据库操作的原子性，一个操作再完成前不可见。node的异步 io 会出现两处地方同时（极短时间内）创建同一个不存在的user触发constrain产生插入异常，属于正常现象，捕获即可。
 2. 通过`begin; ... end;` 关闭自动提交来进行批量提交，仅适用于数据较为规范，插入出错较少的情况。一旦出错，需要回滚上次所有批量操作并且全部进行单次插入。(~~要做字符串拼接改的有点多就懒得弄了~~)
 
-测试:
+测试(连接池为50的情况):
 
 - system info:
 ![manjaro sys info](img/manjaro-info.png)
