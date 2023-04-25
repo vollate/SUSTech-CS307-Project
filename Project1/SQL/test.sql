@@ -15,3 +15,15 @@ select post_id,cnt from(select post_id,tmp.cnt,dense_rank()over(order by cnt des
 select follower_name from(select follower_name,dense_rank()over(order by cnt desc) from(select follower_name,count(*)cnt from relation.follow_relation  group by follower_name)tmp1)tmp2 where dense_rank=1;
 select followee_name from(select followee_name,dense_rank()over(order by cnt desc) from(select followee_name,count(*)cnt from relation.follow_relation  group by followee_name)tmp1)tmp2 where dense_rank=1;
 select post_id from data.posts order by posting_time;
+select post_id from data.posts order by posting_time desc;
+select * from data.users where name='novel_expert';
+select post_id,cnt from(select post_id,tmp.cnt,dense_rank()over(order by cnt desc ) from(select post_id, count(*)cnt from relation.like_relation group by post_id) tmp)tmp1 where tmp1.dense_rank=1;
+select post_id,cnt from(select post_id,tmp.cnt,dense_rank()over(order by cnt desc ) from(select post_id, count(*)cnt from relation.favorite_relation group by post_id) tmp)tmp1 where tmp1.dense_rank=1;
+select post_id,cnt from(select post_id,tmp.cnt,dense_rank()over(order by cnt desc ) from(select post_id, count(*)cnt from relation.share_relation group by post_id) tmp)tmp1 where tmp1.dense_rank=1;
+select follower_name ,cnt from(select follower_name,cnt,dense_rank()over(order by cnt desc) from(select follower_name,count(*)cnt from relation.follow_relation group by follower_name)tmp1)tmp2 where tmp2.dense_rank=1;
+select followee_name ,cnt from(select followee_name,cnt,dense_rank()over(order by cnt desc) from(select followee_name,count(*)cnt from relation.follow_relation group by followee_name)tmp1)tmp2 where tmp2.dense_rank=1;
+select * from data.posts order by posting_time limit 1;
+select * from data.posts order by posting_time desc limit 1;
+select count(*)from (select post_id,extract(year from posting_time)pst_time from data.posts)tmp where pst_time=2020;
+select count(*)from (select post_id,extract(year from posting_time)pst_time from data.posts)tmp where pst_time=2021;
+select count(*)from (select post_id,extract(year from posting_time)pst_time from data.posts)tmp where pst_time=2022;
