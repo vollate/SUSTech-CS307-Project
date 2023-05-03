@@ -1,3 +1,10 @@
+<script setup>
+const Parameters = defineProps({
+    curPage: {type: Number},
+    totalPages: {type: Number}
+})
+</script>
+
 <template>
     <div class="row">
         <ul class="pagination pagination-sm justify-content-center">
@@ -25,10 +32,6 @@
         </ul>
     </div>
 </template>
-
-<script setup>
-
-</script>
 
 <style scoped>
 

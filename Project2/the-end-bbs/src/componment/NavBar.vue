@@ -1,6 +1,23 @@
+<script setup>
+defineEmits(['change-nav']);
+const Parameters = defineProps({
+    curSelected: {
+        type: String,
+    },
+    navBarInfo: {
+        type: Array,
+    }
+});
+
+function checkStatus(curName) {
+    return curName === Parameters.curSelected;
+}
+
+</script>
+
 <template>
     <main>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="nav-bar">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" @click="$emit('change-nav','Home')">THE END</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
@@ -18,17 +35,6 @@
                                 <a class="nav-link" v-else>{{ each[0] }}</a>
                             </li>
                         </template>
-                        <!--                        <li class="nav-item dropdown">-->
-                        <!--                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"-->
-                        <!--                               aria-haspopup="true" aria-expanded="false">Dropdown</a>-->
-                        <!--                            <div class="dropdown-menu">-->
-                        <!--                                <a class="dropdown-item" href="#">Action</a>-->
-                        <!--                                <a class="dropdown-item" href="#">Another action</a>-->
-                        <!--                                <a class="dropdown-item" href="#">Something else here</a>-->
-                        <!--                                <div class="dropdown-divider"></div>-->
-                        <!--                                <a class="dropdown-item" href="#">Separated link</a>-->
-                        <!--                            </div>-->
-                        <!--                        </li>-->
                     </ul>
                     <form class="d-flex">
                         <input class="form-control me-sm-2" type="search" placeholder="Search">
@@ -39,31 +45,3 @@
         </nav>
     </main>
 </template>
-
-<script setup>
-
-import {computed, reactive, watch} from "vue";
-
-defineEmits(['change-nav']);
-const Parameters = defineProps({
-    curSelected: {
-        type: String,
-    },
-    navBarInfo: {
-        type: Array,
-    }
-});
-
-function checkStatus(curName) {
-    return curName === Parameters.curSelected;
-}
-
-// let barStatus = reactive([]);
-// watch(() => Parameters.curSelected, (val, oldVal) => {
-//         barStatus.length = Parameters.navBarInfo.length;
-//         for (let i = 0; i < Parameters.navBarInfo.length; ++i) {
-//             barStatus[i] = (val === Parameters.navBarInfo[i]);
-//         }
-//     }
-// )
-</script>
