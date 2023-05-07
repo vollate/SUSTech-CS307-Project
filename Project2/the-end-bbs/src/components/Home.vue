@@ -1,17 +1,25 @@
 <script setup>
-import {inject} from "vue";
+import {inject, reactive} from "vue";
 import Table from "./Table.vue";
-
-const Parameters = defineProps({
-    headerClass: {type: String},
-    tableClass: {type: String},
-    tableHeader: {
-        type: Array
-    },
-    tableContent: {
-        type: Array
-    }
+import {useRoute, useRouter} from "vue-router";
+const router=useRouter();
+// const Parameters = defineProps({
+//     headerClass: {type: String},
+//     tableClass: {type: String},
+//     tableHeader: {
+//         type: Array
+//     },
+//     tableContent: {
+//         type: Array
+//     }
+// })
+const Parameters = reactive({
+    headerClass: 'table-primary',
+    tableClass: 'table-default',
+    tableHeader: ['Title', 'User', 'Content', 'Clicks'],
+    tableContent: [['T1', 'far', 'emmmmmm', '3'], ['T2', 'ptr', 'example', '1']]
 })
+
 const fetchSinglePost = inject('fetchSinglePost');
 
 async function openClicked(index) {
@@ -30,6 +38,7 @@ async function openClicked(index) {
         </div>
         <Table v-bind="Parameters" @table-clicked="openClicked"/>
     </div>
+    <router-view></router-view>
 </template>
 
 <style scoped>

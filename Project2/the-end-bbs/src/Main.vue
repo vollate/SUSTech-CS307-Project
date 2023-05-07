@@ -8,11 +8,11 @@
 
 <script setup>
 import {computed, provide, reactive, ref} from "vue";
-import NavBar from "./componment/NavBar.vue";
-import Home from "./componment/Home.vue";
-import Post from "./componment/Post.vue";
-import Category from "./componment/Category.vue";
-import User from "./componment/User.vue";
+import NavBar from "./components/NavBar.vue";
+import Home from "./components/Home.vue";
+import Post from "./components/Post.vue";
+import Category from "./components/Category.vue";
+import User from "./components/User.vue";
 
 // global variable
 const serverURL = 'https://localhost';
@@ -48,7 +48,7 @@ async function doInit() {
 // NavBar variable
 const NavBarParameters = reactive({
     curSelected: 'Category',
-    navBarInfo: [['Home'], ['Post'], ['Category'], ['User']]
+    navBarInfo: ['Home', 'Post', 'Category', 'User']
 })
 const HomeStatus = computed(() => NavBarParameters.curSelected === 'Home');
 const PostStatus = computed(() => NavBarParameters.curSelected === 'Post');
@@ -69,7 +69,6 @@ const HomeParameters = reactive({
     tableClass: 'table-default',
     tableHeader: ['Title', 'User', 'Content', 'Clicks'],
     tableContent: [['T1', 'far', 'emmmmmm', '3'], ['T2', 'ptr', 'example', '1']]
-    // tableContent: hotTable
 })
 let hotTable = [];
 

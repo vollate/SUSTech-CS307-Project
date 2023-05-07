@@ -26,13 +26,13 @@ function checkStatus(curName) {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto">
-                        <template v-for="each of Parameters.navBarInfo" :key="each[0]">
-                            <li class="nav-item" @click="$emit('change-nav',each[0])">
+                        <template v-for="eachName of Parameters.navBarInfo" :key="eachName">
+                            <li class="nav-item" @click="$emit('change-nav',eachName)">
                                 <a class="nav-link active"
-                                   v-if="checkStatus(each[0])">{{ each[0] }}
+                                   v-if="checkStatus(eachName)">{{ eachName }}
                                     <span class="visually-hidden">(current)</span>
                                 </a>
-                                <a class="nav-link" v-else>{{ each[0] }}</a>
+                                <a class="nav-link" v-else>{{ eachName }}</a>
                             </li>
                         </template>
                     </ul>

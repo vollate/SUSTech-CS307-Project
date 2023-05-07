@@ -13,6 +13,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
     "vite": "^4.3.3",
-    "vue-cookie": "^1.1.4"
+    "vue-cookie": "^1.1.4",
+    "vue-router": "^4.1.6"
   }
 }
