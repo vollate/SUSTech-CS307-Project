@@ -1,13 +1,16 @@
 package com.TheEnd.www.service;
 
+
 import com.TheEnd.www.db.DBOperators;
 import com.TheEnd.www.db.requestTypes.PostOpType;
 import com.TheEnd.www.db.requestTypes.SearchOpType;
 import com.TheEnd.www.db.requestTypes.UserOpType;
 
+
 import java.util.ArrayList;
 
 public class RequestSolver {
+
     private static DBOperators dbHandler;
 
     public static void SetHandler(DBOperators handler) {

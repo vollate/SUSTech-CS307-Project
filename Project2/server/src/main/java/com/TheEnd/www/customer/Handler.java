@@ -1,6 +1,7 @@
 package com.TheEnd.www.customer;
 
 import com.TheEnd.www.db.requestTypes.*;
+
 import com.TheEnd.www.service.RequestSolver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,4 @@ public class Handler {
             return new ArrayList();
         }
     }
-
-
 }
