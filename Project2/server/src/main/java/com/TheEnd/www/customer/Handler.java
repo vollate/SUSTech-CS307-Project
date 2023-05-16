@@ -31,6 +31,4 @@ public class Handler {
             return new ArrayList();
         }
     }
-
-
 }
