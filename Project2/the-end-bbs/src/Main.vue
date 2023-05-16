@@ -1,23 +1,32 @@
 <template>
     <NavBar v-bind="NavBarParameters" @change-nav="changeNav"/>
-    <Home v-bind="HomeParameters" v-if="HomeStatus"/>
-    <Post v-bind="PostParameters" v-if="PostStatus"/>
-    <Category v-bind="CategoryParameters" v-if="CategoryStatus"/>
-    <User v-bind="UserParameters" v-if="UserStatus"/>
+    <HomePage v-bind="HomeParameters" v-if="HomeStatus"/>
+    <PostPage v-bind="PostParameters" v-if="PostStatus"/>
+    <CategoryPage v-bind="CategoryParameters" v-if="CategoryStatus"/>
+    <UserPage v-bind="UserParameters" v-if="UserStatus"/>
+    <Post />
 </template>
 
 <script setup>
 import {computed, provide, reactive, ref} from "vue";
+// import fetch from "node-fetch";
 import NavBar from "./componments/NavBar.vue";
-import Home from "./componments/Home.vue";
+import HomePage from "./componments/HomePage.vue";
+import PostPage from "./componments/PostPage.vue";
+import CategoryPage from "./componments/CategoryPage.vue";
+import UserPage from "./componments/UserPage.vue";
 import Post from "./componments/Post.vue";
-import Category from "./componments/Category.vue";
-import User from "./componments/User.vue";
 
 // global variable
-const serverURL = 'https://localhost';
-const serverPort = '5285';
 let hadLogin = false;
+const fetchTemplate = {
+    method: 'POST',
+    headers: {
+        "Content-Type":
+            "application/json"
+    },
+    body: ''
+};
 
 async function fetchSinglePost(header) {
     console.log(header)//TODO
@@ -31,29 +40,25 @@ provide('fetchSinglePost', fetchSinglePost);
 async function doInit() {
     switch (NavBarParameters.curSelected) {
         case 'Home':
-            await fetchHotTable();
-            break;
+            return fetchHotTable();
         case 'Post':
-            await fetchPosts();
-            break;
+            return fetchPosts();
         case 'Category':
-            await fetchCategories();
-            break;
+            return fetchCategories();
         case 'User':
-            await fetchPosts();
-            break;
+            return fetchPosts();
     }
 }
 
 // NavBar variable
 const NavBarParameters = reactive({
-    curSelected: 'Category',
+    curSelected: 'Post',
     navBarInfo: [['Home'], ['Post'], ['Category'], ['User']]
 })
-const HomeStatus = computed(() => NavBarParameters.curSelected === 'Home');
+const HomeStatus = computed(() => NavBarParameters.curSelected === 'HomePage');
 const PostStatus = computed(() => NavBarParameters.curSelected === 'Post');
-const CategoryStatus = computed(() => NavBarParameters.curSelected === 'Category');
-const UserStatus = computed(() => NavBarParameters.curSelected === 'User');
+const CategoryStatus = computed(() => NavBarParameters.curSelected === 'CategoryPage');
+const UserStatus = computed(() => NavBarParameters.curSelected === 'UserPage');
 
 function changeNav(clickedName) {
     if (clickedName !== NavBarParameters.curSelected) {
@@ -63,11 +68,11 @@ function changeNav(clickedName) {
 }
 
 
-// Home variable
+// HomePage variable
 const HomeParameters = reactive({
     headerClass: 'table-primary',
     tableClass: 'table-default',
-    tableHeader: ['Title', 'User', 'Content', 'Clicks'],
+    tableHeader: ['Title', 'UserPage', 'Content', 'Clicks'],
     tableContent: [['T1', 'far', 'emmmmmm', '3'], ['T2', 'ptr', 'example', '1']]
     // tableContent: hotTable
 })
@@ -85,7 +90,7 @@ async function fetchHotTable() {
 const PostParameters = ref({
     headerClass: 'table-primary',
     tableClass: 'table-default',
-    tableHeader: ['Title', 'Author', 'Category', 'Likes'],
+    tableHeader: ['Title', 'Author', 'CategoryPage', 'Likes'],
     tableContent: [['f', 'f', 'f', 's'], ['e', 'e', 'e', 'q']]
 })
 
@@ -93,7 +98,7 @@ async function fetchPosts() {
 
 }
 
-// Category variable
+// CategoryPage variable
 const CategoryParameters = reactive({
     categories: {
         name: ['f', 'e', 'd', 'c', 'b', 'a'],
@@ -102,13 +107,33 @@ const CategoryParameters = reactive({
 })
 
 async function fetchCategories() {
+    let config = fetchTemplate;
+    config.body = JSON.stringify({
+        type: 'PostOp',
+        content: ['GetCategories']
+    });
+    return fetch('/request', config)
+        .then(ret => ret.json())
+        .then(contents => {
+            console.log(contents);
+            CategoryParameters.categories.name.length = 0;
+            CategoryParameters.categories.amount.length = 0;
+            for (let i = 0; i < contents.length;) {
+                CategoryParameters.categories.name.push(contents[i++]);
+                CategoryParameters.categories.amount.push(contents[i++]);
+            }
+        });
 }
 
-// User variable
+// UserPage variable
 const UserParameters = reactive({
     hadLogin: computed(() => hadLogin)
-})
+});
 
+//Post variable
+const PostParameters= reactive({
+
+});
 </script>
 
 <style scoped>

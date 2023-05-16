@@ -1,9 +1,16 @@
 package com.TheEnd.www.db.requestTypes;
 
 public enum PostOpType {
-    GetPost("GetPost"), GetReply("GetReply"), GetSecondReply("GetSecondReply"), AddPost("AddPost"),
-    AddReply("AddReply"), AddSecondReply("AddSecondReply"), DeletePost("DeletePost"),
-    DeleteReply("DeleteReply"), DeleteSecondaryReply("DeleteSecondaryReply");
+    GetPost("GetPost"),
+    GetReply("GetReply"),
+    GetSecondReply("GetSecondReply"),
+    AddPost("AddPost"),
+    AddReply("AddReply"),
+    AddSecondReply("AddSecondReply"),
+    DeletePost("DeletePost"),
+    DeleteReply("DeleteReply"),
+    DeleteSecondaryReply("DeleteSecondaryReply"),
+    GetCategories("GetCategories");
 
     private final String name;
 
