@@ -1,10 +1,10 @@
 <template>
     <NavBar v-bind="NavBarParameters" @change-nav="changeNav"/>
-    <HomePage v-bind="HomeParameters" v-if="HomeStatus"/>
-    <PostPage v-bind="PostParameters" v-if="PostStatus"/>
+    <HomePage v-bind="HomePageParameters" v-if="HomeStatus"/>
+    <PostPage v-bind="PostPageParameters" v-if="PostStatus"/>
     <CategoryPage v-bind="CategoryParameters" v-if="CategoryStatus"/>
     <UserPage v-bind="UserParameters" v-if="UserStatus"/>
-    <Post />
+    <Post/>
 </template>
 
 <script setup>
@@ -69,25 +69,28 @@ function changeNav(clickedName) {
 
 
 // HomePage variable
-const HomeParameters = reactive({
+const HomePageParameters = reactive({
     headerClass: 'table-primary',
     tableClass: 'table-default',
     tableHeader: ['Title', 'UserPage', 'Content', 'Clicks'],
     tableContent: [['T1', 'far', 'emmmmmm', '3'], ['T2', 'ptr', 'example', '1']]
     // tableContent: hotTable
 })
-let hotTable = [];
+let hotTable = reactive([['T1', 'far', 'emmmmmm', '3'], ['T2', 'ptr', 'example', '1']]);
 
 async function fetchHotTable() {
-    hotTable = fetch('/hot-posts', {
-        method: 'Post'
-    }).then((content) => {
+    let config = fetchTemplate;
+    config.body = JSON.stringify({
+        type: "SearchOp",
+        content: []
+    })
+    hotTable = fetch('/request', config).then((content) => {
         hotTable = content.json();
     })
 }
 
-// Post variable
-const PostParameters = ref({
+// PostPage variable
+const PostPageParameters = ref({
     headerClass: 'table-primary',
     tableClass: 'table-default',
     tableHeader: ['Title', 'Author', 'CategoryPage', 'Likes'],
@@ -131,9 +134,7 @@ const UserParameters = reactive({
 });
 
 //Post variable
-const PostParameters= reactive({
-
-});
+const PostParameters = reactive({});
 </script>
 
 <style scoped>
