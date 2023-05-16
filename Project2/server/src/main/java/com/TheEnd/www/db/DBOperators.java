@@ -13,7 +13,6 @@ public interface DBOperators {
     public boolean closeDataSource();
 
     public ArrayList dealUser(UserOpType t, ArrayList content);
-    /**/
 
     public ArrayList dealPost(PostOpType t, ArrayList content);
 
