@@ -7,11 +7,6 @@ import com.TheEnd.www.db.requestTypes.UserOpType;
 import java.util.ArrayList;
 
 public interface DBOperators {
-
-    public boolean openDataSource();
-
-    public boolean closeDataSource();
-
     public ArrayList dealUser(UserOpType t, ArrayList content);
 
     public ArrayList dealPost(PostOpType t, ArrayList content);
