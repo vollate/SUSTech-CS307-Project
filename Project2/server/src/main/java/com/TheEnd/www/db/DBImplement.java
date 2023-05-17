@@ -1,61 +1,36 @@
 package com.TheEnd.www.db;
 
-import com.TheEnd.www.db.requestTypes.PostOpType;
-import com.TheEnd.www.db.requestTypes.SearchOpType;
-import com.TheEnd.www.db.requestTypes.UserOpType;
+import com.TheEnd.www.db.requesttypes.PostOpType;
+import com.TheEnd.www.db.requesttypes.SearchOpType;
+import com.TheEnd.www.db.requesttypes.UserOpType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.lang.reflect.Type;
+import java.sql.Types;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-@SpringBootApplication
-public class DBImplement implements  DBOperators {
+@Component
+public class DBImplement implements DBOperators {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbc;
 
-    public CompletableFuture<int[]> insertBatchAsync(List<String> examples) {
-        String sql = "INSERT INTO example (id, name) VALUES (?, ?)";
-
-        return CompletableFuture.supplyAsync(() -> {
-            return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    String example = examples.get(i);
-                }
-
-                @Override
-                public int getBatchSize() {
-                    return examples.size();
-                }
-            });
-        });
+    private static class SQLSentenses {
+        static String UserLogin = "select count(*) from data.users where name = ? and password = ?";
     }
-
-//    public static void main(String[] args) {
-//        SpringApplication.run(DBImplement.class, args);
-//    }
-//
-//    @Override
-//    public void run(String... args) throws Exception {
-//        System.out.println("Hello, this is a test for Spring Boot with JDBC");
-//        jdbcTemplate.update("insert into rubbish(name,num) values('fuck',3)");
-//    }
 
     @Override
     public ArrayList dealUser(UserOpType t, ArrayList content) {
         ArrayList res = new ArrayList();
         switch (t) {
             case Login -> {
-                return res;
+                int count = jdbc.queryForObject(SQLSentenses.UserLogin, new Object[]{content.get(0), content.get(1)}, new int[]{Types.VARCHAR, Types.VARCHAR}, int.class);
+                res.add(count == 1);
             }
             case CreateUser -> {
+                System.out.println("test");
             }
             case DeleteUser -> {
             }
@@ -67,6 +42,14 @@ public class DBImplement implements  DBOperators {
 
     @Override
     public ArrayList dealPost(PostOpType t, ArrayList content) {
+        System.out.println("deal post");
+        String test = null;
+        try {
+            test = jdbc.queryForObject("select now()", String.class);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        System.out.println(test);
         ArrayList res = new ArrayList();
         switch (t) {
             case GetPost -> {

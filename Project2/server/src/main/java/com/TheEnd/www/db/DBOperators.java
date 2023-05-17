@@ -1,8 +1,8 @@
 package com.TheEnd.www.db;
 
-import com.TheEnd.www.db.requestTypes.PostOpType;
-import com.TheEnd.www.db.requestTypes.SearchOpType;
-import com.TheEnd.www.db.requestTypes.UserOpType;
+import com.TheEnd.www.db.requesttypes.PostOpType;
+import com.TheEnd.www.db.requesttypes.SearchOpType;
+import com.TheEnd.www.db.requesttypes.UserOpType;
 
 import java.util.ArrayList;
 

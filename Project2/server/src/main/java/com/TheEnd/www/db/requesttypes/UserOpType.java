@@ -1,4 +1,4 @@
-package com.TheEnd.www.db.requestTypes;
+package com.TheEnd.www.db.requesttypes;
 
 public enum UserOpType {
     Login("Login"), CreateUser("CreateUser"), DeleteUser("DeleteUser"), ChangePassword("ChangePassword");

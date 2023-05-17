@@ -1,28 +1,28 @@
 package com.TheEnd.www.service;
 
 import com.TheEnd.www.db.DBOperators;
-import com.TheEnd.www.db.requestTypes.PostOpType;
-import com.TheEnd.www.db.requestTypes.SearchOpType;
-import com.TheEnd.www.db.requestTypes.UserOpType;
+import com.TheEnd.www.db.requesttypes.PostOpType;
+import com.TheEnd.www.db.requesttypes.SearchOpType;
+import com.TheEnd.www.db.requesttypes.UserOpType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Service
 public class RequestSolver {
-    private static DBOperators dbHandler;
+    @Autowired
+    private DBOperators dbHandler;
 
-    public static void SetHandler(DBOperators handler) {
-        dbHandler = handler;
-    }
-
-    public static ArrayList solveUserOp(UserOpType t, ArrayList content) {
+    public ArrayList solveUserOp(UserOpType t, ArrayList content) {
         return dbHandler.dealUser(t, content);
     }
 
-    public static ArrayList solvePostOp(PostOpType t, ArrayList content) {
+    public ArrayList solvePostOp(PostOpType t, ArrayList content) {
         return dbHandler.dealPost(t, content);
     }
 
-    public static ArrayList solveSearchOp(SearchOpType t, ArrayList content) {
+    public ArrayList solveSearchOp(SearchOpType t, ArrayList content) {
         return dbHandler.dealSearch(t, content);
     }
 }
