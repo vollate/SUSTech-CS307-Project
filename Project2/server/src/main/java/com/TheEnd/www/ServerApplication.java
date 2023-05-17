@@ -10,6 +10,7 @@ public class ServerApplication {
 
     public static void main(String[] args) {
         RequestSolver.SetHandler(new DBImplement());
+
         SpringApplication.run(ServerApplication.class, args);
     }
 
