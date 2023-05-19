@@ -12,8 +12,7 @@ insert into data.secondary_replies(secondary_reply_id, reply_id, stars, content,
 values (nextval('id_sequence.secondary_reply_seq')::numeric, (select data.replies.reply_id
                                                               from data.replies
                                                               where author_name = '田所浩二'
-                                                                and content = '哼~哼~哼~~啊啊啊啊啊啊啊啊啊啊啊啊'), 0,
-        '???', 'void');
+                                                                and content = '哼~哼~哼~~啊啊啊啊啊啊啊啊啊啊啊啊'), 0, '???', 'void');
 
 insert into data.categories(category, post_id)
 values ('这么臭的post不要也罢', 1);

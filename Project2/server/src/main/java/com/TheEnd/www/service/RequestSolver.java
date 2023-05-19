@@ -1,9 +1,7 @@
 package com.TheEnd.www.service;
 
 import com.TheEnd.www.db.DBOperators;
-import com.TheEnd.www.db.requesttypes.PostOpType;
-import com.TheEnd.www.db.requesttypes.SearchOpType;
-import com.TheEnd.www.db.requesttypes.UserOpType;
+import com.TheEnd.www.db.requestTypes.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +22,11 @@ public class RequestSolver {
 
     public ArrayList solveSearchOp(SearchOpType t, ArrayList content) {
         return dbHandler.dealSearch(t, content);
+    }
+    public ArrayList solveRelationOp(RelationOpType t, ArrayList content) {
+        return dbHandler.dealRelation(t, content);
+    }
+    public ArrayList solveShowOp(ShowOpType t, ArrayList content) {
+        return dbHandler.dealShow(t, content);
     }
 }

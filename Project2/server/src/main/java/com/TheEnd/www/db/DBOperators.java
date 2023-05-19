@@ -1,8 +1,6 @@
 package com.TheEnd.www.db;
 
-import com.TheEnd.www.db.requesttypes.PostOpType;
-import com.TheEnd.www.db.requesttypes.SearchOpType;
-import com.TheEnd.www.db.requesttypes.UserOpType;
+import com.TheEnd.www.db.requestTypes.*;
 
 import java.util.ArrayList;
 
@@ -12,5 +10,7 @@ public interface DBOperators {
     public ArrayList dealPost(PostOpType t, ArrayList content);
 
     public ArrayList dealSearch(SearchOpType t, ArrayList content);
+    public ArrayList dealRelation(RelationOpType t, ArrayList content);
+    public ArrayList dealShow(ShowOpType t, ArrayList content);
 
 }
