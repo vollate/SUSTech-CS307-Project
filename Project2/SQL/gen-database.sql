@@ -16,7 +16,7 @@ create table if not exists data.users
     user_id           char(18),
     registration_time timestamp,
     phone             char(15),
-    password          varchar
+    password          varchar default '123456'
 );
 
 create table if not exists data.posts

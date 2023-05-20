@@ -18,10 +18,10 @@ const TableParameters = ref({
         tableContent: Parameters.tableContent
     }
 )
-const FootParameters = ref({
-    curPage: Parameters.curPage,
-    totalPages: Parameters.totalPages
-})
+// const FootParameters = ref({
+//     curPage: Parameters.curPage,
+//     totalPages: Parameters.totalPages
+// })
 </script>
 
 <template>
@@ -30,7 +30,7 @@ const FootParameters = ref({
         <div class="m-3"></div>
         <Table v-bind="TableParameters"/>
     </div>
-    <Foot v-bind="FootParameters"/>
+<!--    <Foot v-bind="FootParameters"/>-->
 </template>
 
 <style scoped>

@@ -26,7 +26,7 @@ async function openClicked(index) {
         <p class="h1 sub-title">The end will never end</p>
         <div class="mb-5 h-auto"></div>
         <div class="row">
-            <p class="h3 table-title">‍🔥 What's Hot ‍🔥</p>
+            <p class="h3 table-title">What's Hot</p>
         </div>
         <Table v-bind="Parameters" @table-clicked="openClicked"/>
     </div>
