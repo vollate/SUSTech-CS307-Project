@@ -80,9 +80,10 @@ public class DBImplement implements DBOperators {
                     jdbc.update(SQLSentenses.InsertUser,
                             new Object[]{content.get(0), content.get(1), content.get(2), content.get(3)},
                             new int[]{Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR});
-                    res.add(count == 0);
+                    res.add(true);
                 } else {
-                    res.add(count == 0);
+                    res.add(false);
+                    res.add("User name already exist");
                 }
             }
             case DeleteUser -> {
@@ -125,7 +126,7 @@ public class DBImplement implements DBOperators {
                                         .author_name(rs.getString(4))
                                         .city(rs.getString(5))
                                         .country(rs.getString(6))
-                                        .content(rs.getString(7)).build();
+                                        .content(rs.getString(10)).build();
                             }
                         }
                         , content.get(0));
@@ -356,6 +357,16 @@ public class DBImplement implements DBOperators {
                             .content(rs.getString("content"))
                             .AppendixType(1)
                             .AppendixContent(rs.getString("reply_content"))
+                            .build();
+                }));
+            }
+            case ShowUserInfo -> {
+                res.addAll(jdbc.query("select * from data.users where name = ?", new Object[]{userName}, (rs, rowNum) -> {
+                    return User.builder()
+                            .name(rs.getString("name"))
+                            .user_id(rs.getString("user_id"))
+                            .registration_time(rs.getString("registration_time"))
+                            .phone(rs.getString("phone"))
                             .build();
                 }));
             }
