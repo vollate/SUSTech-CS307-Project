@@ -66,7 +66,6 @@ public class DBImplement implements DBOperators {
 
     @Override
     public ArrayList dealUser(UserOpType t, ArrayList content) {
-        System.out.println("deal user");
         ArrayList res = new ArrayList();
         switch (t) {
             case Login -> {
@@ -77,25 +76,25 @@ public class DBImplement implements DBOperators {
             case CreateUser -> {
                 int count = jdbc.queryForObject(SQLSentenses.CheckUser,
                         new Object[]{content.get(0)}, new int[]{Types.VARCHAR}, int.class);
-                if(count==0){
+                if (count == 0) {
                     jdbc.update(SQLSentenses.InsertUser,
-                             new Object[]{content.get(0), content.get(1), content.get(2), content.get(3)},
+                            new Object[]{content.get(0), content.get(1), content.get(2), content.get(3)},
                             new int[]{Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR});
-                    res.add(count==0);
-                }else{
-                    res.add(count==0);
+                    res.add(count == 0);
+                } else {
+                    res.add(count == 0);
                 }
             }
             case DeleteUser -> {
                 int count = jdbc.queryForObject(SQLSentenses.CheckUser,
                         new Object[]{content.get(0)}, new int[]{Types.VARCHAR}, int.class);
-                if(count==1){
+                if (count == 1) {
                     jdbc.update(SQLSentenses.DeleteUser,
                             new Object[]{content.get(0)},
                             new int[]{Types.VARCHAR});
-                    res.add(count==1);
-                }else{
-                    res.add(count==1);
+                    res.add(count == 1);
+                } else {
+                    res.add(count == 1);
                 }
             }
             case ChangePassword -> {
@@ -105,53 +104,54 @@ public class DBImplement implements DBOperators {
                 res.add(ret);
             }
         }
+        System.out.print("return: ");
+        System.out.println(res);
         return res;
     }
 
     @Override
     public ArrayList dealPost(PostOpType t, ArrayList content) {
-        System.out.println("deal post");
         ArrayList res = new ArrayList();
         switch (t) {
             case GetPost -> {
                 Post post;
                 List<Post> postList = jdbc.query(SQLSentenses.getPost, new RowMapper<Post>() {
-                    @Override
-                    public Post mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return Post.builder()
-                                .post_id(rs.getLong(1))
-                                .title(rs.getString(2))
-                                .posting_time(rs.getString(3))
-                                .author_name(rs.getString(4))
-                                .city(rs.getString(5))
-                                .country(rs.getString(6))
-                                .content(rs.getString(7)).build();
-                    }
-                }
-                , content.get(0));
+                            @Override
+                            public Post mapRow(ResultSet rs, int rowNum) throws SQLException {
+                                return Post.builder()
+                                        .post_id(rs.getLong(1))
+                                        .title(rs.getString(2))
+                                        .posting_time(rs.getString(3))
+                                        .author_name(rs.getString(4))
+                                        .city(rs.getString(5))
+                                        .country(rs.getString(6))
+                                        .content(rs.getString(7)).build();
+                            }
+                        }
+                        , content.get(0));
                 List<Reply> replyList = jdbc.query(SQLSentenses.getReply, new RowMapper<Reply>() {
-                    @Override
-                    public Reply mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return Reply.builder()
-                                .reply_id(rs.getLong(1))
-                                .stars(rs.getString(2))
-                                .content(rs.getString(3))
-                                .author_name(rs.getString(4)).build();
-                    }
-                }
-                , content.get(0));
+                            @Override
+                            public Reply mapRow(ResultSet rs, int rowNum) throws SQLException {
+                                return Reply.builder()
+                                        .reply_id(rs.getLong(1))
+                                        .stars(rs.getString(2))
+                                        .content(rs.getString(3))
+                                        .author_name(rs.getString(4)).build();
+                            }
+                        }
+                        , content.get(0));
                 for (int i = 0; i < replyList.size(); i++) {
                     List<SecReply> secReplies = jdbc.query(SQLSentenses.getSecReply, new RowMapper<SecReply>() {
-                        @Override
-                        public SecReply mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return SecReply.builder()
-                                    .secReply_id(rs.getLong(1))
-                                    .stars(rs.getString(2))
-                                    .content(rs.getString(3))
-                                    .author_name(rs.getString(4)).build();
-                        }
-                    }
-                    , replyList.get(i).getReply_id());
+                                @Override
+                                public SecReply mapRow(ResultSet rs, int rowNum) throws SQLException {
+                                    return SecReply.builder()
+                                            .secReply_id(rs.getLong(1))
+                                            .stars(rs.getString(2))
+                                            .content(rs.getString(3))
+                                            .author_name(rs.getString(4)).build();
+                                }
+                            }
+                            , replyList.get(i).getReply_id());
                     replyList.get(i).setSecReplies((ArrayList<SecReply>) secReplies);
                 }
 
@@ -171,7 +171,7 @@ public class DBImplement implements DBOperators {
             case AddPost -> {
                 int post_id = jdbc.queryForObject(SQLSentenses.GenNewPostId, int.class);
                 jdbc.update(SQLSentenses.InsertPost, new Object[]{post_id, content.get(0), content.get(1), content.get(2), content.get(3), content.get(4)},
-                        new int[]{Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,Types.VARCHAR, Types.VARCHAR});
+                        new int[]{Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR});
             }
         }
         return res;
@@ -182,7 +182,7 @@ public class DBImplement implements DBOperators {
         System.out.println("deal search");
         ArrayList res = new ArrayList();
         String keyword = "%" + content.get(0) + "%";
-        switch(t){
+        switch (t) {
             case SearchDefault -> {
                 int limit = (int) content.get(1);
                 int offset = (int) content.get(2);
@@ -261,12 +261,13 @@ public class DBImplement implements DBOperators {
         }
         return res;
     }
+
     @Override
     public ArrayList dealShow(ShowOpType t, ArrayList content) {
         System.out.println("deal show");
         ArrayList res = new ArrayList();
         String userName = (String) content.get(0);
-        switch (t){
+        switch (t) {
             case ShowLikePosts -> {
                 res.addAll(jdbc.query(SQLSentenses.ShowLikePosts, new Object[]{userName}, new RowMapper<SimplePost>() {
                     @Override
