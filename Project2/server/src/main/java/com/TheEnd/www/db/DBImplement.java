@@ -232,33 +232,45 @@ public class DBImplement implements DBOperators {
     public ArrayList dealRelation(RelationOpType t, ArrayList content) {
         System.out.println("deal relation");
         ArrayList res = new ArrayList();
-        switch (t) {
-            case Like -> {
-                jdbc.update("INSERT INTO relation.like_relation (post_id, user_name, time) VALUES (?, ?, current_timestamp)",
-                        new Object[]{content.get(0), content.get(1)},
-                        new int[]{Types.NUMERIC, Types.VARCHAR});
+        boolean noException = true;
+        try {
+
+            switch (t) {
+                case Like -> {
+                    jdbc.update("INSERT INTO relation.like_relation (post_id, user_name, time) VALUES (?, ?, current_timestamp)",
+                            new Object[]{content.get(0), content.get(1)},
+                            new int[]{Types.NUMERIC, Types.VARCHAR});
+                }
+                case Fav -> {
+                    jdbc.update("INSERT INTO relation.favorite_relation (post_id, user_name, time) VALUES (?, ?, current_timestamp)",
+                            new Object[]{content.get(0), content.get(1)},
+                            new int[]{Types.NUMERIC, Types.VARCHAR});
+                }
+                case Share -> {
+                    jdbc.update("INSERT INTO relation.share_relation (post_id, user_name, time) VALUES (?, ?, current_timestamp)",
+                            new Object[]{content.get(0), content.get(1)},
+                            new int[]{Types.NUMERIC, Types.VARCHAR});
+                }
+                case Follow -> {
+                    jdbc.update("INSERT INTO relation.follow_relation (followee_name, follower_name) VALUES (?, ?)",
+                            new Object[]{content.get(0), content.get(1)},
+                            new int[]{Types.VARCHAR, Types.VARCHAR});
+
+                }
+                case DeleteFollow -> {
+
+                    jdbc.update("DELETE FROM relation.follow_relation WHERE followee_name = ? AND follower_name = ?",
+                            new Object[]{content.get(0), content.get(1)},
+                            new int[]{Types.VARCHAR, Types.VARCHAR});
+
+                }
             }
-            case Fav -> {
-                jdbc.update("INSERT INTO relation.favorite_relation (post_id, user_name, time) VALUES (?, ?, current_timestamp)",
-                        new Object[]{content.get(0), content.get(1)},
-                        new int[]{Types.NUMERIC, Types.VARCHAR});
-            }
-            case Share -> {
-                jdbc.update("INSERT INTO relation.share_relation (post_id, user_name, time) VALUES (?, ?, current_timestamp)",
-                        new Object[]{content.get(0), content.get(1)},
-                        new int[]{Types.NUMERIC, Types.VARCHAR});
-            }
-            case Follow -> {
-                jdbc.update("INSERT INTO relation.follow_relation (followee_name, follower_name) VALUES (?, ?)",
-                        new Object[]{content.get(0), content.get(1)},
-                        new int[]{Types.VARCHAR, Types.VARCHAR});
-            }
-            case DeleteFollow -> {
-                jdbc.update("DELETE FROM relation.follow_relation WHERE followee_name = ? AND follower_name = ?",
-                        new Object[]{content.get(0), content.get(1)},
-                        new int[]{Types.VARCHAR, Types.VARCHAR});
-            }
+        } catch (Exception e) {
+            noException = false;
+            res.add(false);
+            res.add(e.toString());
         }
+        if (noException) res.add(true);
         return res;
     }
 

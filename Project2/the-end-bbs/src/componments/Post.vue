@@ -18,6 +18,7 @@ const post = ref(Parameters.post);
       <p class="col post-info">Country: {{ post.country }}</p>
       <p class="col post-info">Author: {{ post.author_name }}</p>
     </div>
+
     <div class="row">
       <button @click="$emit('dealRelation',['Like',post.post_id])" type="button" class="col-1 btn btn-info">like</button>
       <div class="col-1"/>
@@ -25,6 +26,8 @@ const post = ref(Parameters.post);
       <div class="col-1"/>
       <button @click="$emit('dealRelation',['Share',post.post_id])" type="button" class="col-1 btn btn-info">share</button>
     </div>
+    <div class="mb-4"/>
+
     <div class="row">
       <hr/>
       <p style="font-size: 25pt">Post content: {{ post.content }}</p>

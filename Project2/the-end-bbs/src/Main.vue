@@ -283,7 +283,7 @@ async function fetchSinglePost(postId) {
 
 async function dealRelation(opInfo) {
   if (!GlobalVariable.hadLogin)
-    return window.alert("Login First!");
+    return window.alert("Login First !");
   let config = GlobalVariable.fetchTemplate;
   config.body = JSON.stringify({
     type: 'RelationOp',
@@ -292,7 +292,10 @@ async function dealRelation(opInfo) {
   return fetch(GlobalVariable.postURL, config)
       .then(ret => ret.json())
       .then(contents => {
-        window.alert(contents[0]);
+        if (contents[0])
+          window.alert('Operation succeed');
+        else
+          window.alert('Operation failed: ' + contents[1]);
       });
 }
 </script>
