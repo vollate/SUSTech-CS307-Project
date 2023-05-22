@@ -18,34 +18,28 @@ const post = ref(Parameters.post);
       <p class="col post-info">Country: {{ post.country }}</p>
       <p class="col post-info">Author: {{ post.author_name }}</p>
     </div>
-
     <div class="row">
-      <button @click="$emit('dealRelation',['Like',post.post_id])" type="button" class="col-1 btn btn-info">like
-      </button>
+      <button @click="$emit('dealRelation',['Like',post.post_id])" type="button" class="col-1 btn btn-info">like</button>
       <div class="col-1"/>
-      <button @click="$emit('dealRelation',['Fav',post.post_id])" type="button" class="col-1 btn btn-info">favorite
-      </button>
+      <button @click="$emit('dealRelation',['Fav',post.post_id])" type="button" class="col-1 btn btn-info">favorite</button>
       <div class="col-1"/>
-      <button @click="$emit('dealRelation',['Share',post.post_id])" type="button" class="col-1 btn btn-info">share
-      </button>
+      <button @click="$emit('dealRelation',['Share',post.post_id])" type="button" class="col-1 btn btn-info">share</button>
     </div>
-    <div class="mb-4"/>
-
     <div class="row">
       <hr/>
       <p style="font-size: 25pt">Post content: {{ post.content }}</p>
       <div v-for="reply of post.replies">
         <p class="row reply-info "> Author: {{ reply.author_name }}</p>
+        <!--        <p class="row reply-info">reply id: {{ reply.reply_id }}</p>-->
         <p class="col-lg-10 "> {{ reply.content }}</p>
         <hr/>
-        <p>Secondary Replies</p>
-        <div class="card">
-          <div class="card-body">
-            <div class="card-title" v-for="secReply of reply.secReplies">
-              <div class="row">
-                <p class="sec-reply-title col">Author: {{ secReply.author_name }}</p>
-                <button @click="$emit('dealRelation',['Follow',secReply.author_name])" class="col-1 btn" style="color: #1ba9bf">Follow</button>
-                <p style="margin-left: 4em">{{ secReply.content }}</p>
+        replies
+        <div class="row">
+          <div class="card ">
+            <div class="card-body">
+              <div class="card-title" v-for="secReply of reply.secReplies">
+                <p class="sec-reply-title">Author: {{ secReply.author_name }}</p>
+                <p>{{ secReply.content }}</p>
               </div>
             </div>
           </div>
@@ -64,13 +58,11 @@ const post = ref(Parameters.post);
 
 
 .reply-info {
-  font-size: 15pt;
   color: #085c73;
 }
 
 .sec-reply-title {
-  font-size: 15pt;
-  color: #4f55a5;
+//font-size: 18pt; color: #4f55a5;
 }
 
 </style>

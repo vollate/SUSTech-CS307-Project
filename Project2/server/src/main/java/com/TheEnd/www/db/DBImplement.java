@@ -265,12 +265,7 @@ public class DBImplement implements DBOperators {
 
                 }
             }
-        } catch (Exception e) {
-            noException = false;
-            res.add(false);
-            res.add(e.toString());
         }
-        if (noException) res.add(true);
         return res;
     }
 
