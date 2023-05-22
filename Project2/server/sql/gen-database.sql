@@ -13,10 +13,10 @@ create schema if not exists id_sequence;
 create table if not exists data.users
 (
     name              varchar primary key,
-    password          varchar,
-    user_id           char(18),
+    user_id           varchar,
     registration_time timestamp,
-    phone             char(15)
+    phone             char(15),
+    password          varchar default '123456'
 );
 
 create table if not exists data.posts
@@ -28,8 +28,8 @@ create table if not exists data.posts
     city         varchar,
     country      varchar,
     likes        numeric default 0,
-    favorites     numeric default 0,
-    shares        numeric default 0,
+    favorites    numeric default 0,
+    shares       numeric default 0,
     content      text                                 not null
 );
 
@@ -40,6 +40,7 @@ create table if not exists data.replies
     stars       bigint check ( stars >= 0 ),
     content     text                                    not null check ( content != '' ),
     author_name varchar                                 not null,
+    anonymity   bool                                    not null default false,
     unique (post_id, content, author_name)
 );
 
@@ -50,6 +51,7 @@ create table if not exists data.secondary_replies
     stars              bigint check ( stars >= 0 ),
     content            text                                       not null check (content != ''),
     author_name        varchar                                    not null,
+    anonymity          bool                                       not null default false,
     unique (reply_id, content, author_name)
 );
 
@@ -74,7 +76,6 @@ create table if not exists relation.share_relation
 (
     post_id   numeric references data.posts (post_id) not null,
     user_name varchar                                 not null,
-    time      timestamp,
     primary key (post_id, user_name)
 );
 
@@ -82,7 +83,6 @@ create table if not exists relation.favorite_relation
 (
     post_id   numeric references data.posts (post_id) not null,
     user_name varchar                                 not null,
-    time      timestamp,
     primary key (post_id, user_name)
 );
 
@@ -96,8 +96,8 @@ create table if not exists relation.like_relation
 
 -- sequence
 
-create sequence if not exists id_sequence.reply_seq;
-create sequence if not exists id_sequence.secondary_reply_seq;
+create sequence id_sequence.reply_seq;
+create sequence id_sequence.secondary_reply_seq;
 
 -- rules
 do

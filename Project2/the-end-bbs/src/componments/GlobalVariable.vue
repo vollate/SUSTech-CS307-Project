@@ -1,8 +1,9 @@
-<script >
+<script>
 import {reactive} from "vue";
 
-export const globalVariable = reactive({
+export const GlobalVariable = reactive({
   hadLogin: false,
+  userName: '',
   fetchTemplate: {
     method: 'POST',
     headers: {
@@ -11,7 +12,7 @@ export const globalVariable = reactive({
     },
     body: ''
   },
-  postURL:'/request'
+  postURL: '/request'
 })
 </script>
 
