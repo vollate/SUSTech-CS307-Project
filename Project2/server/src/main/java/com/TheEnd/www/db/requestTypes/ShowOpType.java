@@ -8,7 +8,8 @@ public enum ShowOpType {
     ShowFollowers("ShowFollowers"),
     ShowFollowees("ShowShowFollowees"),
     ShowUserPost("ShowUserPost"),
-    ShowUserReplyPost("ShowUserReplyPost");
+    ShowUserReplyPost("ShowUserReplyPost"),
+    ShowUserInfo("ShowUserInfo");
 
     private final String name;
 

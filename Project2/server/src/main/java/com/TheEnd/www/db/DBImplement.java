@@ -359,6 +359,16 @@ public class DBImplement implements DBOperators {
                             .build();
                 }));
             }
+            case ShowUserInfo -> {
+                res.addAll(jdbc.query("select * from data.users where name = ?", new Object[]{userName}, (rs, rowNum) -> {
+                    return User.builder()
+                            .name(rs.getString("name"))
+                            .user_id(rs.getString("user_id"))
+                            .registration_time(rs.getString("registration_time"))
+                            .phone(rs.getString("phone"))
+                            .build();
+                }));
+            }
         }
         return res;
     }
