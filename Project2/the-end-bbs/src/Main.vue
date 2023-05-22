@@ -1,10 +1,10 @@
 <template>
   <NavBar v-bind="NavBarParameters" @change-nav="changeNav"/>
-  <!--  <HomePage v-bind="HomePageParameters" v-if="HomeStatus"/>-->
+  <HomePage v-bind="HomePageParameters" v-if="HomeStatus"/>
   <!--  <PostPage v-bind="PostPageParameters" v-if="PostStatus"/>-->
-  <!--  <CategoryPage v-bind="CategoryParameters" v-if="CategoryStatus"/>-->
-  <!--  <UserPage v-if="UserStatus"/>-->
-  <Post v-bind="PostParameters" @dealRelation="dealRelation"/>
+  <CategoryPage v-bind="CategoryParameters" v-if="CategoryStatus"/>
+  <UserPage v-if="UserStatus"/>
+  <Post v-bind="PostParameters" v-if="PostStatus" @dealRelation="dealRelation"/>
 </template>
 
 <script setup>
