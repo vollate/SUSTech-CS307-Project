@@ -6,9 +6,10 @@ public enum ShowOpType {
     ShowFavPosts("ShowFavPosts"),
     ShowSharePosts("ShowSharePosts"),
     ShowFollowers("ShowFollowers"),
-    ShowFollowees("ShowShowFollowees"),
+    ShowFollowees("ShowFollowees"),
     ShowUserPost("ShowUserPost"),
-    ShowUserReplyPost("ShowUserReplyPost");
+    ShowUserReplyPost("ShowUserReplyPost"),
+    ShowUserInfo("ShowUserInfo");
 
     private final String name;
 
