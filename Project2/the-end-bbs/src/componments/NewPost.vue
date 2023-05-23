@@ -22,7 +22,6 @@ async function newPost() {
     return fetch(GlobalVariable.postURL, config)
         .then(res => res.json())
         .then(data => {
-
         })
 }
 </script>

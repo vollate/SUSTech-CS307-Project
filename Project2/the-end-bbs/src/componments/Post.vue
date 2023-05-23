@@ -26,10 +26,10 @@ async function newReply() {
     return fetch(GlobalVariable.postURL, config)
         .then(res => res.json())
         .then(data => {
-            if (data.content[0])
-                window.alert('Succeed');
-            else
-                window.alert('Operation Failed');
+            // if (data.content[0])
+            //     window.alert('Succeed');
+            // else
+            //     window.alert('Operation Failed');
         })
 }
 
@@ -49,10 +49,10 @@ async function newSecReply(replyId) {
     return fetch(GlobalVariable.postURL, config)
         .then(res => res.json())
         .then(data => {
-            if (data.content[0])
-                window.alert('Succeed');
-            else
-                window.alert('Operation Failed');
+            // if (data.content[0])
+            //     window.alert('Succeed');
+            // else
+            //     window.alert('Operation Failed');
         })
 }
 </script>
