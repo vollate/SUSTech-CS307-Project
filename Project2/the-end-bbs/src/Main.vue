@@ -129,7 +129,7 @@ async function fetchCategories() {
         });
 }
 
-const PostParameters = reactive({post: {}})
+const PostParameters = reactive({post:{}});
 
 async function fetchSinglePost(postId) {
     let config = GlobalVariable.fetchTemplate;

@@ -1,11 +1,60 @@
 <script setup>
 import {ref} from "vue";
+import {GlobalVariable} from "./GlobalVariable.vue";
 
 defineEmits(['dealRelation', 'replyPost', 'replyReply']);
 const Parameters = defineProps({
     post: {type: Object}
 });
 const post = ref(Parameters.post);
+let newReplyContent = '';
+let newSecReplyContent = '';
+
+async function newReply() {
+    if (!GlobalVariable.hadLogin) {
+        window.alert('Login first !');
+        return;
+    } else if (newReplyContent.length === 0) {
+        window.alert('Input cannot be null');
+        return;
+    }
+    let config = GlobalVariable.fetchTemplate;
+    config.body = JSON.stringify({
+        type: "PostOp",
+        content: ["AddReply", Parameters.post.post_id, newReplyContent, GlobalVariable.userName]
+    })
+    return fetch(GlobalVariable.postURL, config)
+        .then(res => res.json())
+        .then(data => {
+            if (data.content[0])
+                window.alert('Succeed');
+            else
+                window.alert('Operation Failed');
+        })
+}
+
+async function newSecReply(replyId) {
+    if (!GlobalVariable.hadLogin) {
+        window.alert('Login first !');
+        return;
+    } else if (newSecReplyContent.length === 0) {
+        window.alert('Input cannot be null');
+        return;
+    }
+    let config = GlobalVariable.fetchTemplate;
+    config.body = JSON.stringify({
+        type: "PostOp",
+        content: ["AddSecondReply", replyId, newSecReplyContent, GlobalVariable.userName]
+    })
+    return fetch(GlobalVariable.postURL, config)
+        .then(res => res.json())
+        .then(data => {
+            if (data.content[0])
+                window.alert('Succeed');
+            else
+                window.alert('Operation Failed');
+        })
+}
 </script>
 
 <template>
@@ -32,11 +81,24 @@ const post = ref(Parameters.post);
             </button>
         </div>
         <div class="row">
+            <input v-model="newReplyContent" type="text" class="form-control col" id="floatingPassword"
+                   placeholder="New Reply">
+            <button @click="newReply" class="btn col-1 btn-info">Submit</button>
+        </div>
+        <div class="row">
             <hr/>
             <p style="font-size: 20pt">{{ post.content }}</p>
             <div v-for="reply of post.replies">
                 <p class="row reply-info "> Author: {{ reply.author_name }}</p>
                 <p class="col-lg-10 "> {{ reply.content }}</p>
+                <hr/>
+                <div class="row">
+                    <input v-model="newSecReplyContent" type="text" class="form-control col"
+                           id="floatingPassword"
+                           placeholder="New Reply">
+                    <button @click="newSecReply(reply.reply_id)" class="btn col-1 btn">Submit
+                    </button>
+                </div>
                 <hr/>
                 <p>Secondary Replies</p>
                 <div class="card">
