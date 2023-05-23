@@ -1,5 +1,5 @@
 <script setup>
-defineEmits(['change-nav']);
+defineEmits(['change-nav', 'search']);
 const Parameters = defineProps({
     curSelected: {
         type: String,
@@ -13,6 +13,7 @@ function checkStatus(curName) {
     return curName === Parameters.curSelected;
 }
 
+let searchInput;
 </script>
 
 <template>
@@ -20,10 +21,10 @@ function checkStatus(curName) {
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" @click="$emit('change-nav','Home')">THE END</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
-                        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <!--                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"-->
+                <!--                        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">-->
+                <!--                    <span class="navbar-toggler-icon"></span>-->
+                <!--                </button>-->
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto">
                         <template v-for="each of Parameters.navBarInfo" :key="each[0]">
@@ -37,9 +38,12 @@ function checkStatus(curName) {
                         </template>
                     </ul>
                     <form class="d-flex">
-                        <input class="form-control me-sm-2" type="search" placeholder="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                        <!--                        <input v-model="searchInput" class="form-control me-sm-2" type="search" placeholder="Search">-->
+                        <input v-model="searchInput" class="form-control me-sm-2">
+                        <!--            <button @click="$emit('search',searchInput)" class="btn btn-primary my-2 my-sm-0" type="submit">Search-->
                     </form>
+                    <button @click="$emit('search',searchInput)" class="btn btn-primary my-2 my-sm-0">Search
+                    </button>
                 </div>
             </div>
         </nav>

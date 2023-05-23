@@ -49,12 +49,12 @@ const loginInfo = {
           <label for="floatingInput">User name</label>
         </div>
         <div class="form-floating mb-3">
-          <input v-model="register.userId" type="number" class="align-items-center form-control" id="signup-userid"
+          <input v-model="register.userId" type="email" class="align-items-center form-control" id="signup-userid"
             placeholder="0">
           <label for="floatingInput">ID (optional)</label>
         </div>
         <div class="form-floating mb-3">
-          <input v-model="register.phone" type="number" class="align-items-center form-control" id="signup-phone"
+          <input v-model="register.phone" type="email" class="align-items-center form-control" id="signup-phone"
             placeholder="10086">
           <label for="floatingInput">Phone number (optional)</label>
         </div>

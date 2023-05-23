@@ -31,7 +31,6 @@ public class Handler {
                 default -> new ArrayList();
             });
         } catch (Exception e) {
-
             return new RequestResponse();
         }
     }
