@@ -62,6 +62,25 @@ public class DBImplement implements DBOperators {
                 "left join data.secondary_replies sr on r.reply_id = sr.reply_id " +
                 "where (p.title like ? or p.content like ? or r.content like ? or sr.content like ?) and (posting_time between ? and ?) order by p.posting_time desc limit ? offset ?";
 
+        static String SearchByHot = "select * from (select hot0 + like_cnt * 100 + fav_cnt * 200 + share_cnt * 300 as hot, a.id as id " +
+                "               from (select likes + favorites * 2 + shares * 3 as hot0, post_id as id from data.posts) a " +
+                "                        join (select count(*) as like_cnt, l.post_id as id " +
+                "                              from data.posts p " +
+                "                                       join relation.like_relation l on p.post_id = l.post_id " +
+                "                              where l.time > ? " +
+                "                              group by l.post_id) b on a.id = b.id " +
+                "                        join (select count(*) as fav_cnt, l.post_id as id " +
+                "                              from data.posts p " +
+                "                                       join relation.favorite_relation l on p.post_id = l.post_id " +
+                "                              where l.time > ? " +
+                "                              group by l.post_id) c on a.id = c.id " +
+                "                        join (select count(*) as share_cnt, l.post_id as id " +
+                "                              from data.posts p " +
+                "                                       join relation.share_relation l on p.post_id = l.post_id " +
+                "                              where l.time > ? " +
+                "                              group by l.post_id) d on a.id = d.id " +
+                "               order by hot desc " +
+                "               limit 10) x join data.posts p on x.id = p.post_id order by hot desc;";
     }
 
     @Override
@@ -214,6 +233,12 @@ public class DBImplement implements DBOperators {
                 int offset = (int) content.get(4);
                 res.addAll(jdbc.query(SQLSentenses.SearchOpt12, new Object[]{keyword, keyword, keyword, keyword, timeStart, timeEnd, limit, offset},
                         (rs, rowNum) -> createSimplePost(rs, 1, rs.getString("appendix_content"))));
+            }
+            case SearchByHot -> {
+                Timestamp timeStart = Timestamp.valueOf(content.get(0).toString());
+                res.addAll(jdbc.query(SQLSentenses.SearchByHot, new Object[]{timeStart,timeStart,timeStart},
+                        (rs, rowNum) -> createSimplePost(rs, 0, null)));
+
             }
         }
         return res;

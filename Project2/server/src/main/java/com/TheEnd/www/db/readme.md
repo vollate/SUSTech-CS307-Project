@@ -131,6 +131,15 @@
 //option 1 and 2 added.
 {keyword, time_start, time_end, limit, offset}
 ```
+### SearchOpType.SearchByHot
+```java
+{time_start}
+//返回10条按热度排序的SimplePost
+//热度计算方式：post的所有like*1+fav*2+share*3记为hot0
+//            time_start后的like*1+fav*2+share*3记为hot1
+//            总热度为 hot0 + hot1*100
+//根据总热度排序，取前10个 
+```
 
 
 ```java
