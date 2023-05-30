@@ -31,13 +31,13 @@ public class DBImplement implements DBOperators {
         static String GenNewPostId = "select * from gen_new_postid()";
         static String InsertPost = "insert into data.posts(post_id, title, posting_time, author_name, city, country, content) " +
                 "values (?, ?, current_timestamp, ?, ?, ?, ?)";
-        static String InsertReply = "insert into data.replies(reply_id, post_id, content, author_name) " +
-                "values (nextval('id_sequence.reply_seq')::numeric, ?, ?, ?)";
-        static String InsertSecReply = "insert into data.secondary_replies(secondary_reply_id, reply_id, content, author_name) " +
-                "values (nextval('id_sequence.secondary_reply_seq')::numeric, ?, ?, ?)";
+        static String InsertReply = "insert into data.replies(reply_id, post_id, content, author_name,anonymity) " +
+                "values (nextval('id_sequence.reply_seq')::numeric, ?, ?, ?,?)";
+        static String InsertSecReply = "insert into data.secondary_replies(secondary_reply_id, reply_id, content, author_name,anonymity) " +
+                "values (nextval('id_sequence.secondary_reply_seq')::numeric, ?, ?, ?,?)";
         static String getPost = "select * from data.posts where post_id = ?";
-        static String getReply = "select reply_id, stars, content, author_name from data.replies where post_id = ?";
-        static String getSecReply = "select secondary_reply_id, stars, content, author_name from data.secondary_replies where reply_id = ?";
+        static String getReply = "select reply_id, stars, content, author_name, anonymity from data.replies where post_id = ?";
+        static String getSecReply = "select secondary_reply_id, stars, content, author_name,anonymity from data.secondary_replies where reply_id = ?";
         static String ShowLikePosts = "select p.post_id, p.title, p.author_name, p.content from data.posts p " +
                 "join relation.like_relation l on p.post_id = l.post_id where l.user_name = ?";
         static String ShowFavPosts = "select p.post_id, p.title, p.author_name, p.content from data.posts p " +
@@ -62,6 +62,25 @@ public class DBImplement implements DBOperators {
                 "left join data.secondary_replies sr on r.reply_id = sr.reply_id " +
                 "where (p.title like ? or p.content like ? or r.content like ? or sr.content like ?) and (posting_time between ? and ?) order by p.posting_time desc limit ? offset ?";
 
+        static String SearchByHot = "select * from (select hot0 + like_cnt * 100 + fav_cnt * 200 + share_cnt * 300 as hot, a.id as id " +
+                "               from (select likes + favorites * 2 + shares * 3 as hot0, post_id as id from data.posts) a " +
+                "                        join (select count(*) as like_cnt, l.post_id as id " +
+                "                              from data.posts p " +
+                "                                       join relation.like_relation l on p.post_id = l.post_id " +
+                "                              where l.time > ? " +
+                "                              group by l.post_id) b on a.id = b.id " +
+                "                        join (select count(*) as fav_cnt, l.post_id as id " +
+                "                              from data.posts p " +
+                "                                       join relation.favorite_relation l on p.post_id = l.post_id " +
+                "                              where l.time > ? " +
+                "                              group by l.post_id) c on a.id = c.id " +
+                "                        join (select count(*) as share_cnt, l.post_id as id " +
+                "                              from data.posts p " +
+                "                                       join relation.share_relation l on p.post_id = l.post_id " +
+                "                              where l.time > ? " +
+                "                              group by l.post_id) d on a.id = d.id " +
+                "               order by hot desc " +
+                "               limit 10) x join data.posts p on x.id = p.post_id order by hot desc;";
     }
 
     @Override
@@ -113,6 +132,7 @@ public class DBImplement implements DBOperators {
     @Override
     public ArrayList dealPost(PostOpType t, ArrayList content) {
         ArrayList res = new ArrayList();
+        try{
         switch (t) {
             case GetPost -> {
                 Post post;
@@ -137,7 +157,8 @@ public class DBImplement implements DBOperators {
                                         .reply_id(rs.getLong(1))
                                         .stars(rs.getString(2))
                                         .content(rs.getString(3))
-                                        .author_name(rs.getString(4)).build();
+                                        .author_name(rs.getString(4))
+                                        .anonymity(rs.getBoolean(5)).build();
                             }
                         }
                         , content.get(0));
@@ -149,7 +170,8 @@ public class DBImplement implements DBOperators {
                                             .secReply_id(rs.getLong(1))
                                             .stars(rs.getString(2))
                                             .content(rs.getString(3))
-                                            .author_name(rs.getString(4)).build();
+                                            .author_name(rs.getString(4))
+                                            .anonymity(rs.getBoolean(5)).build();
                                 }
                             }
                             , replyList.get(i).getReply_id());
@@ -162,59 +184,69 @@ public class DBImplement implements DBOperators {
                 return res;
             }
             case AddReply -> {
-                jdbc.update(SQLSentenses.InsertReply, new Object[]{content.get(0), content.get(1), content.get(2)},
-                        new int[]{Types.NUMERIC, Types.VARCHAR, Types.VARCHAR});
+                jdbc.update(SQLSentenses.InsertReply, new Object[]{content.get(0), content.get(1), content.get(2), content.get(3)},
+                        new int[]{Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN});
             }
             case AddSecondReply -> {
-                jdbc.update(SQLSentenses.InsertSecReply, new Object[]{content.get(0), content.get(1), content.get(2)},
-                        new int[]{Types.NUMERIC, Types.VARCHAR, Types.VARCHAR});
+                jdbc.update(SQLSentenses.InsertSecReply, new Object[]{content.get(0), content.get(1), content.get(2), content.get(3)},
+                        new int[]{Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.BOOLEAN});
             }
             case AddPost -> {
                 int post_id = jdbc.queryForObject(SQLSentenses.GenNewPostId, int.class);
+                System.out.println(post_id);
                 jdbc.update(SQLSentenses.InsertPost, new Object[]{post_id, content.get(0), content.get(1), content.get(2), content.get(3), content.get(4)},
                         new int[]{Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR});
             }
-        }
+        }}catch(Exception e){System.out.println(e);}
         return res;
     }
 
     @Override
     public ArrayList dealSearch(SearchOpType t, ArrayList content) {
-        System.out.println("deal search");
         ArrayList res = new ArrayList();
         String keyword = "%" + content.get(0) + "%";
-        switch (t) {
-            case SearchDefault -> {
-                int limit = (int) content.get(1);
-                int offset = (int) content.get(2);
-                res.addAll(jdbc.query(SQLSentenses.SearchDefault, new Object[]{keyword, keyword, limit, offset},
-                        (rs, rowNum) -> createSimplePost(rs, 0, null)));
-            }
+        try {
+            switch (t) {
+                case SearchDefault -> {
+                    int limit = (int) content.get(1);
+                    int offset = (int) content.get(2);
+                    res.addAll(jdbc.query(SQLSentenses.SearchDefault, new Object[]{keyword, keyword, limit, offset},
+                            (rs, rowNum) -> createSimplePost(rs, 0, null)));
+                }
 
-            case SearchOpt1 -> {
-                int limit = (int) content.get(1);
-                int offset = (int) content.get(2);
-                res.addAll(jdbc.query(SQLSentenses.SearchOpt1, new Object[]{keyword, keyword, keyword, keyword, limit, offset},
-                        (rs, rowNum) -> createSimplePost(rs, 1, rs.getString("appendix_content"))));
-            }
+                case SearchOpt1 -> {
+                    int limit = (int) content.get(1);
+                    int offset = (int) content.get(2);
+                    res.addAll(jdbc.query(SQLSentenses.SearchOpt1, new Object[]{keyword, keyword, keyword, keyword, limit, offset},
+                            (rs, rowNum) -> createSimplePost(rs, 1, rs.getString("appendix_content"))));
+                }
 
-            case SearchOpt2 -> {
-                Timestamp timeStart = Timestamp.valueOf(content.get(1).toString());
-                Timestamp timeEnd = Timestamp.valueOf(content.get(2).toString());
-                int limit = (int) content.get(3);
-                int offset = (int) content.get(4);
-                res.addAll(jdbc.query(SQLSentenses.SearchOpt2, new Object[]{keyword, keyword, timeStart, timeEnd, limit, offset},
-                        (rs, rowNum) -> createSimplePost(rs, 0, null)));
-            }
+                case SearchOpt2 -> {
+                    Timestamp timeStart = Timestamp.valueOf(content.get(1).toString());
+                    Timestamp timeEnd = Timestamp.valueOf(content.get(2).toString());
+                    int limit = (int) content.get(3);
+                    int offset = (int) content.get(4);
+                    res.addAll(jdbc.query(SQLSentenses.SearchOpt2, new Object[]{keyword, keyword, timeStart, timeEnd, limit, offset},
+                            (rs, rowNum) -> createSimplePost(rs, 0, null)));
+                }
 
-            case SearchOpt12 -> {
-                Timestamp timeStart = Timestamp.valueOf(content.get(1).toString());
-                Timestamp timeEnd = Timestamp.valueOf(content.get(2).toString());
-                int limit = (int) content.get(3);
-                int offset = (int) content.get(4);
-                res.addAll(jdbc.query(SQLSentenses.SearchOpt12, new Object[]{keyword, keyword, keyword, keyword, timeStart, timeEnd, limit, offset},
-                        (rs, rowNum) -> createSimplePost(rs, 1, rs.getString("appendix_content"))));
+                case SearchOpt12 -> {
+                    Timestamp timeStart = Timestamp.valueOf(content.get(1).toString());
+                    Timestamp timeEnd = Timestamp.valueOf(content.get(2).toString());
+                    int limit = (int) content.get(3);
+                    int offset = (int) content.get(4);
+                    res.addAll(jdbc.query(SQLSentenses.SearchOpt12, new Object[]{keyword, keyword, keyword, keyword, timeStart, timeEnd, limit, offset},
+                            (rs, rowNum) -> createSimplePost(rs, 1, rs.getString("appendix_content"))));
+                }
+                case SearchByHot -> {
+                    Timestamp timeStart = Timestamp.valueOf(content.get(0).toString());
+                    res.addAll(jdbc.query(SQLSentenses.SearchByHot, new Object[]{timeStart, timeStart, timeStart},
+                            (rs, rowNum) -> createSimplePost(rs, 0, null)));
+
+                }
             }
+        } catch (Exception e) {
+            System.out.println(e);
         }
         return res;
     }
@@ -266,18 +298,17 @@ public class DBImplement implements DBOperators {
 
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             noException = false;
             res.add(false);
             res.add(e.toString());
         }
-        if(noException) res.add(true);
+        if (noException) res.add(true);
         return res;
     }
 
     @Override
     public ArrayList dealShow(ShowOpType t, ArrayList content) {
-        System.out.println("deal show");
         ArrayList res = new ArrayList();
         String userName = (String) content.get(0);
         switch (t) {

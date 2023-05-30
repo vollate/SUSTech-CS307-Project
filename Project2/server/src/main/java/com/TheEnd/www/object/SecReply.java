@@ -1,4 +1,5 @@
 package com.TheEnd.www.object;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,5 +10,5 @@ public class SecReply {
     String stars;
     String content;
     String author_name;
-
+    boolean anonymity;
 }
