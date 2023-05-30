@@ -103,7 +103,7 @@
 ```
 > *其余同理，写完了之后记得在这里更新api信息*
 
-## ArrayList dealSearch(SearchOpType t, ArrayList content)
+## ArrayList dealSearch(SearchOpType t, A``rrayList content)
 - search options:
   -  0. search from title and post content(always used);
   -  1. search from reply and sec_reply content; 

@@ -199,7 +199,6 @@ public class DBImplement implements DBOperators {
 
     @Override
     public ArrayList dealSearch(SearchOpType t, ArrayList content) {
-        System.out.println("deal search");
         ArrayList res = new ArrayList();
         String keyword = "%" + content.get(0) + "%";
         switch (t) {
@@ -302,7 +301,6 @@ public class DBImplement implements DBOperators {
 
     @Override
     public ArrayList dealShow(ShowOpType t, ArrayList content) {
-        System.out.println("deal show");
         ArrayList res = new ArrayList();
         String userName = (String) content.get(0);
         switch (t) {
