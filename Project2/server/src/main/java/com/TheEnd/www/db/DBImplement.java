@@ -132,6 +132,7 @@ public class DBImplement implements DBOperators {
     @Override
     public ArrayList dealPost(PostOpType t, ArrayList content) {
         ArrayList res = new ArrayList();
+        try{
         switch (t) {
             case GetPost -> {
                 Post post;
@@ -192,10 +193,11 @@ public class DBImplement implements DBOperators {
             }
             case AddPost -> {
                 int post_id = jdbc.queryForObject(SQLSentenses.GenNewPostId, int.class);
+                System.out.println(post_id);
                 jdbc.update(SQLSentenses.InsertPost, new Object[]{post_id, content.get(0), content.get(1), content.get(2), content.get(3), content.get(4)},
                         new int[]{Types.NUMERIC, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR});
             }
-        }
+        }}catch(Exception e){System.out.println(e);}
         return res;
     }
 
