@@ -1,2 +1,5 @@
 # SUSTech-CS307-Project
-2023 spring semester
+
+最终得分：96（基础功能不小心漏写了一个
+
+>别写前端，会变得不幸
