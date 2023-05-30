@@ -11,5 +11,6 @@ public class Reply {
     String stars;
     String content;
     String author_name;
+    boolean anonymity;
     ArrayList<SecReply> secReplies = new ArrayList<>();
 }
