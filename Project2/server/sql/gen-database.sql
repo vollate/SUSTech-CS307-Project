@@ -76,6 +76,7 @@ create table if not exists relation.share_relation
 (
     post_id   numeric references data.posts (post_id) not null,
     user_name varchar                                 not null,
+    time      timestamp default now(),
     primary key (post_id, user_name)
 );
 
@@ -83,6 +84,7 @@ create table if not exists relation.favorite_relation
 (
     post_id   numeric references data.posts (post_id) not null,
     user_name varchar                                 not null,
+    time      timestamp default now(),
     primary key (post_id, user_name)
 );
 
@@ -90,7 +92,7 @@ create table if not exists relation.like_relation
 (
     post_id   numeric references data.posts (post_id) not null,
     user_name varchar                                 not null,
-    time      timestamp,
+    time      timestamp default now(),
     primary key (post_id, user_name)
 );
 

@@ -103,7 +103,7 @@
 ```
 > *其余同理，写完了之后记得在这里更新api信息*
 
-## ArrayList dealSearch(SearchOpType t, ArrayList content)
+## ArrayList dealSearch(SearchOpType t, A``rrayList content)
 - search options:
   -  0. search from title and post content(always used);
   -  1. search from reply and sec_reply content; 
@@ -130,6 +130,15 @@
 ```java
 //option 1 and 2 added.
 {keyword, time_start, time_end, limit, offset}
+```
+### SearchOpType.SearchByHot
+```java
+{time_start}
+//返回10条按热度排序的SimplePost
+//热度计算方式：post的所有like*1+fav*2+share*3记为hot0
+//            time_start后的like*1+fav*2+share*3记为hot1
+//            总热度为 hot0 + hot1*100
+//根据总热度排序，取前10个 
 ```
 
 

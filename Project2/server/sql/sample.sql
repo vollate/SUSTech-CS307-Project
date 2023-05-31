@@ -1,7 +1,7 @@
--- 插入用户
+-- 插入用户/*
 INSERT INTO data.users (name, password, user_id, registration_time, phone) VALUES
-('user1', 'password1', '001', CURRENT_TIMESTAMP, '1234567890'),
-('user2', 'password2', '002', CURRENT_TIMESTAMP, '0987654321');
+('user3', 'password1', '003', CURRENT_TIMESTAMP, '1234567890'),
+('user4', 'password2', '004', CURRENT_TIMESTAMP, '0987654321');
 
 -- 插入帖子
 INSERT INTO data.posts (post_id, title, posting_time, author_name, city, country, content) VALUES
@@ -28,17 +28,18 @@ INSERT INTO relation.follow_relation (followee_name, follower_name) VALUES
 ('user1', 'user2'),
 ('user2', 'user1');
 
+
 -- 插入分享关系
 INSERT INTO relation.share_relation (post_id, user_name, time) VALUES
-(1, 'user2', CURRENT_TIMESTAMP),
-(2, 'user1', CURRENT_TIMESTAMP);
+(1, 'user3', CURRENT_TIMESTAMP),
+(1, 'user4', CURRENT_TIMESTAMP);
 
 -- 插入喜欢关系
 INSERT INTO relation.like_relation (post_id, user_name, time) VALUES
-(1, 'user1', CURRENT_TIMESTAMP),
-(2, 'user2', CURRENT_TIMESTAMP);
+(1, 'user3', CURRENT_TIMESTAMP),
+(1, 'user4', CURRENT_TIMESTAMP);
 
 -- 插入收藏关系
 INSERT INTO relation.favorite_relation (post_id, user_name, time) VALUES
-(1, 'user2', CURRENT_TIMESTAMP),
-(2, 'user1', CURRENT_TIMESTAMP);
+(1, 'user1', CURRENT_TIMESTAMP),
+(2, 'user2', CURRENT_TIMESTAMP);

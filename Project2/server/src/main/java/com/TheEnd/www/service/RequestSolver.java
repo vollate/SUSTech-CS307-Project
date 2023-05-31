@@ -23,9 +23,11 @@ public class RequestSolver {
     public ArrayList solveSearchOp(SearchOpType t, ArrayList content) {
         return dbHandler.dealSearch(t, content);
     }
+
     public ArrayList solveRelationOp(RelationOpType t, ArrayList content) {
         return dbHandler.dealRelation(t, content);
     }
+
     public ArrayList solveShowOp(ShowOpType t, ArrayList content) {
         return dbHandler.dealShow(t, content);
     }
