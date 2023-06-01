@@ -1,12 +1,17 @@
 # Project 2
->
+
 >贾禹帆 栾钦策  
 
 ## Basic
+
 ### Objects
+
 #### Object Implementation
+
 The objects are used contain the return data of different queries. They are java class and we use **lombok** to automaticaly generate a *builder* of the class. Here is an example to show how we use it.
+
 - User.java
+
 ```java
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +26,9 @@ public class User {
     String phone;
 }
 ```
+
 - The usage of class builder
+
 ```java
 // rs is a result set from jdbc.
 return User.builder()
@@ -31,19 +38,24 @@ return User.builder()
                 .registration_time(rs.getStr("registration_time"))
                 .phone(rs.getString("phone"))
                 .build();
-``` 
+```
+
 #### Object Details
+
 All the objects:
+
 1. **Post**. Used for getting the whole information of a Post. To store all the replies of this post,  ```ArrayList<Reply>``` is contained in the class.
 2. **Reply**. Contains the information of a reply of a post. ```ArrayList<SecReply>``` is contained in the class for storing all the secondary replies of this reply.
 3. **SecReply**.  Contains the information of a secondary reply.
-4. **SimplePost**. Contains a reduced information of a post. Used for the need of showing many posts in a page, like searching results and hot list. 
+4. **SimplePost**. Contains a reduced information of a post. Used for the need of showing many posts in a page, like searching results and hot list.
 5. **User**. Contains all the information of an user.
 
-### http/restful API
+### HTTP/RESTful API
 
-- use method `POST`
-- the body format:
+#### Client ask format
+
+- Use method `POST`
+- The body format:
 
 ```json
 {
@@ -53,9 +65,19 @@ All the objects:
 }
 ```
 
-### content for each Op
-(If not specified, the retrun is null)
-#### UserOp
+#### Server reply format
+
+```json
+{
+    "content": [reply1, reply2, ...]
+}
+```
+
+##### Ask&Return format for each Op
+
+>If not specified, the size of retruned content is zero
+
+###### UserOp
 
 - [Login, user_name, password]
   - Return true/talse for whether login success.
@@ -66,7 +88,7 @@ All the objects:
 - [ChangePassword, user_name, old_password, new_passwd]
   - Return False if old_password is wrong
   
-#### PostOp
+###### PostOp
 
 - [GetPost, post_id]
   - Return object *Post*.
@@ -77,8 +99,10 @@ All the objects:
 - [AddSecReply, reply_id, content, author_name]
   - Add a secondary reply under a reply
 
-#### SearchOp
-*In this OpType, 'limit' and 'offset' is for the front end display.* 
+###### SearchOp
+
+*In this OpType, 'limit' and 'offset' is for the front end display.*
+
 - [SearchDefault, keyword, limit, offset]
   - Return ```ArrayList<SimplePost>```. Search the posts with title or content containing the *keyword*.
 - [SearchOpt1, keyword, limit, offset]
@@ -89,7 +113,8 @@ All the objects:
   - Return ```ArrayList<SimplePost>```. The combination of Opt1 and Opt2.
 - [SearchByHot, time_start]
   - Return ```ArrayList<SimplePost>```. Used for getting the hot list. See detail in Advanced->HotTable.
-#### RelationOp
+
+###### RelationOp
 
 - [Like, post_id, user_name]
 - [Fav, post_id, user_name] (favourate)
@@ -97,7 +122,7 @@ All the objects:
 - [Follow, followee, follower]
 - [DeleteFollow, followee, follower]
   
-#### ShowOp
+###### ShowOp
 
 - [ShowFollowers, user_name]
   - Return ```ArrayList<User>```, a list of followers.
@@ -109,8 +134,6 @@ All the objects:
   - Return ```ArrayList<SimplePost>```, a list of posts that the user replied.
 
 ## Advanced
-
-//TODO
 
 ### OpenGauss
 
@@ -161,11 +184,37 @@ public class Handler {
 
 ### Database connection pools
 
-Use Spring Boot's postgres JDBC, which contain connection pools by default
+Use Spring Boot's postgres JDBC, which contain connection pools by default, and we can set the conneciton pools size in config file.
 
 ### Web GUI
 
 Use Vue.js + BootStrap to write a responsive site, the project is in the folder `./the-end-bbs`. After built, copy the resources into Spring Boot project's "resource/static" folder
 
 ### Currency Server
+
+Use node's ansync promise request to test the server's currency performance, result are below:
+For tomcat max execution threads:
+
+- 1 thread:
+![1](img/single-thread.png)
+- 5 threads:
+![5](img/5threads.png)
+- 20 threads:  
+![20](img/20threads.png)
+- 40 threads:  
+![40](img/40threads.png)
+- 80 threads:  
+![80](img/80threads.png)
+- 160 threads:  
+![160](img/160threads.png)
+
+>system info:
+
+```txt
+CPU: AMD Ryzen 7 6800H with Radeon Graphics (16) @ 3.200GHz 
+GPU: AMD ATI Radeon 680M 
+Memory: 9790MiB / 13662MiB 
+```
+
+When max threads greater than physical threads, there is no more improvement.
 
