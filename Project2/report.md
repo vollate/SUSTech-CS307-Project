@@ -3,6 +3,42 @@
 >贾禹帆 栾钦策  
 
 ## Basic
+### Objects
+#### Object Implementation
+The objects are used contain the return data of different queries. They are java class and we use **lombok** to automaticaly generate a *builder* of the class. Here is an example to show how we use it.
+- User.java
+```java
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class User {
+    String name;
+    String password;
+    String user_id;
+    String registration_time;
+    String phone;
+}
+```
+- The usage of class builder
+```java
+// rs is a result set from jdbc.
+return User.builder()
+                .name(rs.getString("name"))
+                .password(rs.getString("password"))
+                .user_id(rs.getString("user_id"))
+                .registration_time(rs.getStr("registration_time"))
+                .phone(rs.getString("phone"))
+                .build();
+``` 
+#### Object Details
+All the objects:
+1. **Post**. Used for getting the whole information of a Post. To store all the replies of this post,  ```ArrayList<Reply>``` is contained in the class.
+2. **Reply**. Contains the information of a reply of a post. ```ArrayList<SecReply>``` is contained in the class for storing all the secondary replies of this reply.
+3. **SecReply**.  Contains the information of a secondary reply.
+4. **SimplePost**. Contains a reduced information of a post. Used for the need of showing many posts in a page, like searching results and hot list. 
+5. **User**. Contains all the information of an user.
 
 ### http/restful API
 
@@ -18,27 +54,59 @@
 ```
 
 ### content for each Op
-
+(If not specified, the retrun is null)
 #### UserOp
 
-- [Login, UserName, Password]
-- [CreateUser, UserName, Password, UserID, UserPhone]
-
+- [Login, user_name, password]
+  - Return true/talse for whether login success.
+- [CreateUser, user_name, password, user_id, user_phone]
+  - Return true/false for whether create a new user success.
+- [DeleteUser, user_name]
+  - Return true/false for whether delete user successfully.
+- [ChangePassword, user_name, old_password, new_passwd]
+  - Return False if old_password is wrong
+  
 #### PostOp
 
-//TODO
+- [GetPost, post_id]
+  - Return object *Post*.
+- [AddPost, title, author_name, city, country, content]
+  - Add a post
+- [AddReply, post_id, content, author_name]
+  - Add a reply under a post
+- [AddSecReply, reply_id, content, author_name]
+  - Add a secondary reply under a reply
 
 #### SearchOp
-
-//TODO
-
+*In this OpType, 'limit' and 'offset' is for the front end display.* 
+- [SearchDefault, keyword, limit, offset]
+  - Return ```ArrayList<SimplePost>```. Search the posts with title or content containing the *keyword*.
+- [SearchOpt1, keyword, limit, offset]
+  - Return ```ArrayList<SimplePost>```. Extend the search range to the reply or secondary reply. The (secondary) reply content is contained in *AppendixContent* of SimplePost object.
+- [SearchOpt2, keyword, time_start, time_end, limit, offset]
+  - Return ```ArrayList<SimplePost>```. Restrict the posting time to between *time_start* and *time_end*.
+- [SearchOpt12, keyword, time_start, time_end, limit, offset]
+  - Return ```ArrayList<SimplePost>```. The combination of Opt1 and Opt2.
+- [SearchByHot, time_start]
+  - Return ```ArrayList<SimplePost>```. Used for getting the hot list. See detail in Advanced->HotTable.
 #### RelationOp
 
-//TODO
-
+- [Like, post_id, user_name]
+- [Fav, post_id, user_name] (favourate)
+- [Share, post_id, user_name]
+- [Follow, followee, follower]
+- [DeleteFollow, followee, follower]
+  
 #### ShowOp
 
-//TODO
+- [ShowFollowers, user_name]
+  - Return ```ArrayList<User>```, a list of followers.
+- [ShowFollowers, user_name]
+  - Return ```ArrayList<User>```, a list of followees.
+- [ShowUserPost, user_name]
+  - Return ```ArrayList<SimplePost>```.
+- [ShowUserReplyPost, user_name]
+  - Return ```ArrayList<SimplePost>```, a list of posts that the user replied.
 
 ## Advanced
 
@@ -54,7 +122,8 @@ Add a boolean column for Reply and Secondary Reply in HDL to represent whether t
 
 ### HotTable
 
-//TODO describe the hot table algorithm
+The Hot Table return 10 posts with the highest '**hot index**'. It has an input of *time_start*, which value can be like '1 week before the current time' to get what is hot this week.  
+The algorithm of calculating the 'hot index' of a post: Mark all time **like\*1+fav\*2+share\*3** of a post as **hot0**. Mark **like\*1+fav\*2+share\*3** which time is between *time_start* and *current time* of a post as **hot1**. The **hot index** is equal to **hot0 + 100\*hot1**.
 
 ### Http/RESTful server
 
