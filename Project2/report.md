@@ -114,7 +114,7 @@ All the objects:
 
 ### OpenGauss
 
-Use docker to deploy. To prevent data loss, we use `-v ${path in host}:/var/lib/opengauss` option when create container to store OpenGauss's data to host's directory. In this way, the data in OpenGauss won't gone when the container is deleted.
+Use docker to deploy. To prevent data loss, we use docker's volume to store data. Use `-v ${volume name}:/var/lib/opengauss` option when create container to store OpenGauss's data to a volume. In this way, the data in OpenGauss won't gone when the container is deleted. We could create another new container and mount previous volume to restore data.
 
 ### Anonymous reply
 
@@ -166,4 +166,6 @@ Use Spring Boot's postgres JDBC, which contain connection pools by default
 ### Web GUI
 
 Use Vue.js + BootStrap to write a responsive site, the project is in the folder `./the-end-bbs`. After built, copy the resources into Spring Boot project's "resource/static" folder
+
+### Currency Server
 
