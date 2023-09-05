@@ -1,5 +1,5 @@
 # SUSTech-CS307-Project
 
-最终得分：96（基础功能不小心漏写了一个
-
+- Project1: 91
+- Project2: 101
 >别写前端，会变得不幸
